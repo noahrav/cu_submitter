@@ -1,0 +1,1 @@
+cmake -B build -S . && cd build && make && echo "[========================]" && ./cu_submitter
