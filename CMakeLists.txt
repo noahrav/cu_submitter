@@ -8,7 +8,7 @@ set(PROJECT_SOURCES
         src/chgen/chgen.cpp
         src/chgen/chgen.h
         src/data/changelog.cpp
-        src/data/changelog.h)
+        src/data/changelog.h src/utils/error.cpp src/utils/error.h src/utils/log.cpp src/utils/log.h)
 
 set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/cmake/Qt5")
 

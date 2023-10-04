@@ -4,6 +4,7 @@
 #include <QLabel>
 
 #include "chgen/chgen.h"
+#include "utils/error.h"
 
 /**
  * @program cu_submitter
@@ -17,13 +18,13 @@ int main(int argc, char* argv[])
 
         if (std::string(argv[1]) == "--chgen") {
             if (argc < 4) {
-                std::cerr << "Error: Not enough arguments." << '\n';
+                error("Error: Not enough arguments.");
                 return 1;
             }
 
             auto changelog = chgen::ChangelogGenerator::scan(argv[2], argv[3]);
             if (changelog == nullptr) {
-                std::cerr << "Error: Could not generate changelog." << '\n';
+                error("Error: Could not generate changelog.");
                 return 1;
             }
 

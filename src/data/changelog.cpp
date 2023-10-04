@@ -1,7 +1,3 @@
-//
-// Created by noahr on 09/09/2023.
-//
-
 #include "changelog.h"
 
 namespace data {
@@ -9,7 +5,6 @@ namespace data {
     std::string Coordinates::stringify() {
         return "(" + std::to_string(x) + "," + std::to_string(y) + ")";
     }
-
 
     std::string status_string(Status status) {
         switch (status) {
@@ -26,10 +21,10 @@ namespace data {
 
     std::string BGMEvent::stringify() {
 
-        std::string s = status_string(status_) + " BGM in event at " + coordinates_.stringify();
+        std::string s = "| BGM in event at " + coordinates_.stringify();
 
         if (!track_name_.empty() && volume_ != 0 && speed_ != 0) {
-            s += "(Track: " + track_name_ + ", volume: " + std::to_string(volume_) + "%, speed: " +
+            s += " (track: " + track_name_ + ", volume: " + std::to_string(volume_) + "%, speed: " +
                  std::to_string(speed_) +
                  "%)";
         }
@@ -46,7 +41,7 @@ namespace data {
     }
 
     std::string id_string(unsigned int id) {
-        std::string s = "";
+        std::string s;
 
         if (id < 1000) {
             s += "0";
@@ -124,7 +119,7 @@ namespace data {
     }
 
     std::string CommonEvent::stringify() {
-        std::string s = status_string(status_) + " CE[" + std::to_string(id_) + "] - " + name_;
+        std::string s = status_string(status_) + " CE[" + id_string(id_) + "] - " + name_;
 
         if (!notes_.empty()) {
             for (auto &note: notes_) {
@@ -136,7 +131,11 @@ namespace data {
     }
 
     std::string TilesetInfo::stringify() {
-        std::string s = status_string(status_) + " Tileset[" + std::to_string(id_) + "] - " + name_;
+        std::string s = status_string(status_) + " Tileset[" + id_string(id_) + "] - " + name_;
+
+        if (!chipset_name_.empty() && status_ == ADDED) {
+            s += " (chipset: " + chipset_name_ + ")";
+        }
 
         if (!notes_.empty()) {
             for (auto &note: notes_) {
@@ -148,7 +147,7 @@ namespace data {
     }
 
     std::string Switch::stringify() {
-        std::string s = status_string(status_) + " Switch[" + std::to_string(id_) + "] - " + name_;
+        std::string s = status_string(status_) + " Switch[" + id_string(id_) + "] - " + name_;
 
         if (!notes_.empty()) {
             for (auto &note: notes_) {
@@ -160,7 +159,7 @@ namespace data {
     }
 
     std::string Variable::stringify() {
-        std::string s = status_string(status_) + " Variable[" + std::to_string(id_) + "] - " + name_;
+        std::string s = status_string(status_) + " Variable[" + id_string(id_) + "] - " + name_;
 
         if (!notes_.empty()) {
             for (auto &note: notes_) {
@@ -172,7 +171,11 @@ namespace data {
     }
 
     std::string Animation::stringify() {
-        std::string s = status_string(status_) + " Animation[" + std::to_string(id_) + "] - " + name_;
+        std::string s = status_string(status_) + " Animation[" + id_string(id_) + "] - " + name_;
+
+        if (!animation_name_.empty() && status_ == ADDED) {
+            s += " (file: " + animation_name_ + ")";
+        }
 
         if (!notes_.empty()) {
             for (auto &note: notes_) {
@@ -208,12 +211,12 @@ namespace data {
             case PICTURE:
                 s += " Picture ";
                 break;
-            default:
-                s += " Asset ";
+            case BATTLE_ANIMATION:
+                s += " Battle ";
                 break;
         }
 
-        s += filename_ + " - " + name_;
+        s += name_;
 
         if (!contributors_.empty()) {
             s += " (by " + contributors_ + ")";
@@ -229,7 +232,13 @@ namespace data {
     }
 
     std::string date_string(tm* date) {
-        std::string s = std::to_string(date->tm_mday) + "/";
+        std::string s;
+
+        int day = date->tm_mday;
+        if (day < 10) {
+            s += '0';
+        }
+        s += std::to_string(day) + "/";
 
         switch (date->tm_mon) {
             case 0:
@@ -420,6 +429,15 @@ namespace data {
 
         for (auto &picture: pictures_) {
             s += picture.stringify() + "\n";
+        }
+
+        // Animation files
+        if (!animation_files.empty()) {
+            s += separator;
+        }
+
+        for (auto &animation: animation_files) {
+            s += animation.stringify() + "\n";
         }
 
         return s;
