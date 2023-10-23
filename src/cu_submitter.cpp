@@ -29,6 +29,13 @@ int main(int argc, char* argv[])
             }
 
             chgen::ChangelogGenerator::generate(changelog);
+        } else if (std::string(argv[1]) == "--transfer") {
+            if (argc < 4) {
+                error("Error: Not enough arguments.");
+                return 1;
+            }
+
+            //transfer
         }
 
         return 0;
