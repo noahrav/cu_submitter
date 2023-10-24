@@ -24,13 +24,18 @@ namespace transfer {
          * Returns the last scanned transfer changelog
          * @returns The last scanned transfer's changelog
          */
-        static std::shared_ptr<data::Changelog> getTransferChangelog(void);
+        static std::shared_ptr<data::Changelog> getTransferChangelog();
 
         /**
          * Moves or override your changes into the newest devbuild. getTransferChangelog must be called beforehand
          * @param to Unmodified copy of the newest devbuild
          */
         static void transfer(const std::string& to);
+
+        /**
+         * Exports the last scanned transfer changelog to a text file inside destination_path_
+         */
+        static void exportChangelog();
 
     private:
         /**

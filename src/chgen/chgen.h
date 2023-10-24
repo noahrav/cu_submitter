@@ -27,7 +27,7 @@ namespace chgen {
          * @brief Generates a changelog file.
          * @param changelog
          */
-        static void generate(const std::shared_ptr<data::Changelog>& changelog);
+        static void generate(const std::shared_ptr<data::Changelog> &changelog, const std::string &at = "");
     };
 
 } // chgen

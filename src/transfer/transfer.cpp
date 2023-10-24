@@ -22,7 +22,7 @@ namespace transfer {
         return transferChangelog_;
     }
 
-    std::shared_ptr<data::Changelog> DevbuildTransferer::getTransferChangelog(void) {
+    std::shared_ptr<data::Changelog> DevbuildTransferer::getTransferChangelog() {
         return transferChangelog_;
     }
 
@@ -143,6 +143,21 @@ namespace transfer {
         transferAssets(transferChangelog_->panoramas_, data::AssetCategory::PANORAMA);
         transferAssets(transferChangelog_->pictures_, data::AssetCategory::PICTURE);
         transferAssets(transferChangelog_->animation_files, data::AssetCategory::BATTLE_ANIMATION);
+    }
+
+    void DevbuildTransferer::exportChangelog() {
+        if (destination_path_.empty()) {
+            error("Destination path not defined");
+            return;
+        }
+        if (!transferChangelog_) {
+            error("No changelog scanned");
+            return;
+        }
+
+        fs::path export_path = destination_path_;
+
+        chgen::ChangelogGenerator::generate(transferChangelog_, export_path.parent_path());
     }
 
 } // transfer

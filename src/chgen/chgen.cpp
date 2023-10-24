@@ -581,12 +581,13 @@ namespace chgen {
     /**
      * @brief Generates a plain text changelog file from a Changelog object. The name of the file will be <developer name>_<date>_changelog.txt
      * @param changelog The changelog we want to save in a file
+     * @param at The path where we want to save the file. If empty, the file will be saved in the current directory.
      */
-    void ChangelogGenerator::generate(const std::shared_ptr<data::Changelog> &changelog) {
+    void ChangelogGenerator::generate(const std::shared_ptr<data::Changelog> &changelog, const std::string& at) {
         std::string date = data::date_string(changelog->date_);
         std::string date_formatted = date.substr(0, 2) + date.substr(3, 3) + date.substr(7, date.length());
 
-        std::string filename = changelog->developer_ + "_" + date_formatted + "_changelog.txt";
+        std::string filename = at / fs::path(changelog->developer_ + "_" + date_formatted + "_changelog.txt");
 
         // this ensures that we don't overwrite any existing file
         for (int i = 2; fs::exists(filename); i++) {

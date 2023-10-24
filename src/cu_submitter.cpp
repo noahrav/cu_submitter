@@ -4,6 +4,7 @@
 #include <QLabel>
 
 #include "chgen/chgen.h"
+#include "transfer/transfer.h"
 #include "utils/error.h"
 #include "utils/log.h"
 #include "utils/print.h"
@@ -33,7 +34,7 @@ int main(int argc, char* argv[])
                 return 1;
             }
 
-            auto changelog = chgen::ChangelogGenerator::scan(argv[2], argv[3]);
+            const auto changelog = chgen::ChangelogGenerator::scan(argv[2], argv[3]);
             if (changelog == nullptr) {
                 error("Could not generate changelog");
                 return 1;
@@ -50,7 +51,11 @@ int main(int argc, char* argv[])
             const std::string from = argv[3];
             const std::string to = argv[4];
 
-            //transfer
+            const auto changelog = transfer::DevbuildTransferer::getTransferChangelog(base, from);
+
+            transfer::DevbuildTransferer::transfer(to);
+
+            transfer::DevbuildTransferer::exportChangelog();
         } else {
             error("Invalid arguments");
             return 1;
