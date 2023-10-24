@@ -89,6 +89,13 @@ namespace data {
     }
 
     /**
+     * Converts an int in a string of a 4 digit number
+     * @param id The number to turn into a string
+     * @returns The 4 digit stringized version of the number
+     */
+    std::string id_string(unsigned int id);
+
+    /**
      * @brief Data structure used to represent a map.
      */
     struct Map {
@@ -266,6 +273,7 @@ namespace data {
         Status status_;
         AssetCategory category_;
         std::string name_;
+        std::string filename_;
         std::vector<std::string> notes_;
 
         // outside contributors only

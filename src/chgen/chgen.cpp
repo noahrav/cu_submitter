@@ -113,6 +113,7 @@ namespace chgen {
                 changelog_asset.category_ = category;
                 changelog_asset.status_ = data::Status::REMOVED;
                 changelog_asset.name_ = asset.substr(0, asset.find_first_of('.'));
+                changelog_asset.filename_ = asset;
                 assets.push_back(changelog_asset);
             }
         }
@@ -125,6 +126,7 @@ namespace chgen {
                 changelog_asset.category_ = category;
                 changelog_asset.status_ = data::Status::ADDED;
                 changelog_asset.name_ = asset.substr(0, asset.find_first_of('.'));
+                changelog_asset.filename_ = asset;
                 assets.push_back(changelog_asset);
             } else {
                 // asset modified
@@ -140,6 +142,7 @@ namespace chgen {
                         changelog_asset.category_ = category;
                         changelog_asset.status_ = data::Status::MODIFIED;
                         changelog_asset.name_ = asset.substr(0, asset.find_first_of('.'));
+                        changelog_asset.filename_ = asset;
                         assets.push_back(changelog_asset);
                     }
                 } catch (const std::exception &e) {
@@ -396,6 +399,8 @@ namespace chgen {
      */
     std::shared_ptr<data::Changelog>
     ChangelogGenerator::scan(const std::string &base_path, const std::string &modified_path) {
+        log("Scanning changes between " + base_path + " and " + modified_path + "...");
+
         auto base_content = list_directory_content(base_path);
         if (base_content.empty()) {
             return nullptr;

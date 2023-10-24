@@ -9,6 +9,7 @@ set(PROJECT_SOURCES
         src/data/changelog.cpp src/data/changelog.h 
         src/utils/error.cpp src/utils/error.h 
         src/utils/log.cpp src/utils/log.h
+        src/utils/print.cpp src/utils/print.h
         src/transfer/transfer.cpp src/transfer/transfer.h)
 
 set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/cmake/Qt5")

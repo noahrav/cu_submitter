@@ -6,5 +6,4 @@
 
 void error(const std::string& message);
 
-
 #endif //CU_SUBMITTER_ERROR_H
