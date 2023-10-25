@@ -591,8 +591,8 @@ namespace chgen {
 
         // this ensures that we don't overwrite any existing file
         for (int i = 2; fs::exists(filename); i++) {
-            filename = changelog->developer_ + "_" + date_formatted + "_changelog_" +
-                       std::to_string(i) + ".txt";
+            filename = at / fs::path(changelog->developer_ + "_" + date_formatted + "_changelog_" +
+                       std::to_string(i) + ".txt");
         }
 
         std::ofstream file;

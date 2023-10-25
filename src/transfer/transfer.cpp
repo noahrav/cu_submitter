@@ -2,6 +2,11 @@
 
 namespace transfer {
 
+    std::shared_ptr<data::Changelog> DevbuildTransferer::transferChangelog_;
+    std::string DevbuildTransferer::base_path_;
+    std::string DevbuildTransferer::origin_path_;
+    std::string DevbuildTransferer::destination_path_;
+
     std::shared_ptr<data::Changelog> DevbuildTransferer::getTransferChangelog(const std::string& base_path, const std::string &modified_path) {
         if (base_path.empty()) {
             error("Base devbuild path not defined");
@@ -81,7 +86,7 @@ namespace transfer {
             case data::Status::ADDED:
                 log("Adding " + std::string(destination_asset));
 
-                fs::copy(origin_asset, destination_asset);
+                fs::copy(origin_asset, destination_asset, fs::copy_options::update_existing);
                 break;
             }
         }
@@ -96,7 +101,6 @@ namespace transfer {
             case data::Status::REMOVED:
                 log("Removing " + std::string(destination_map));
 
-                //fs::remove(destination_asset); 
                 //TODO: Reset to blank map
                 break;
             case data::Status::MODIFIED:
@@ -107,7 +111,7 @@ namespace transfer {
             case data::Status::ADDED:
                 log("Adding " + std::string(destination_map));
 
-                fs::copy(origin_map, destination_map);
+                fs::copy(origin_map, destination_map, fs::copy_options::update_existing);
                 break;
             }
         }
@@ -123,7 +127,7 @@ namespace transfer {
             error("Origin path not defined");
             return;
         }
-        if (!to.empty()) {
+        if (to.empty()) {
             error("Destination path not defined");
             return;
         }
@@ -143,6 +147,8 @@ namespace transfer {
         transferAssets(transferChangelog_->panoramas_, data::AssetCategory::PANORAMA);
         transferAssets(transferChangelog_->pictures_, data::AssetCategory::PICTURE);
         transferAssets(transferChangelog_->animation_files, data::AssetCategory::BATTLE_ANIMATION);
+
+        transferMaps(transferChangelog_->maps_);
     }
 
     void DevbuildTransferer::exportChangelog() {
