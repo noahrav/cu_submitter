@@ -432,11 +432,11 @@ namespace data {
         }
 
         // Animation files
-        if (!animation_files.empty()) {
+        if (!animation_files_.empty()) {
             s += separator;
         }
 
-        for (auto &animation: animation_files) {
+        for (auto &animation: animation_files_) {
             s += animation.stringify() + "\n";
         }
 

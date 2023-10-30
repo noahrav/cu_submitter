@@ -40,17 +40,38 @@ namespace transfer {
     private:
         /**
          * Transfers assets
-         * @param assets Vector of asset changelog objects
          * @param category The category of the assets. Must correspond with the category of the assets in the assets vector
          */
-        static void transferAssets(const std::vector<data::Asset>& assets, const data::AssetCategory& category);
+        static void transferAssets(const data::AssetCategory& category);
         /**
          * Transfer map files
-         * @param maps Vector of map changelog objects
          */
-        static void transferMaps(const std::vector<data::Map>& maps);
+        static void transferMaps();
+        /**
+         * Transer common events
+         */
+        static void transferCE();
+        /**
+         * Transer tileset entries
+         */
+        static void transferTilesets();
+        /**
+         * Transer switches
+         */
+        static void transferSwitches();
+        /**
+         * Transer variables
+         */
+        static void transferVariables();
+        /**
+         * Transer animation entries
+         */
+        static void transferAnimations();
 
         static std::shared_ptr<data::Changelog> transferChangelog_;
+
+        static std::unique_ptr<lcf::rpg::Database> origin_db_;
+        static std::unique_ptr<lcf::rpg::Database> destination_db_;
 
         static std::string base_path_;
         static std::string origin_path_;

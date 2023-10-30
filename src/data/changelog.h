@@ -395,7 +395,7 @@ namespace data {
         /**
          * @brief List of animation files
          */
-        std::vector<Asset> animation_files;
+        std::vector<Asset> animation_files_;
 
         std::string stringify();
 
@@ -403,7 +403,7 @@ namespace data {
     };
 
     inline bool operator==(const Changelog& lhs, const Changelog& rhs) {
-        return lhs.developer_ == rhs.developer_ && lhs.summary_ == rhs.summary_ && lhs.map_policy_ == rhs.map_policy_ && lhs.asset_policy_ == rhs.asset_policy_ && lhs.maps_ == rhs.maps_ && lhs.connections_ == rhs.connections_ && lhs.common_events_ == rhs.common_events_ && lhs.tilesets_ == rhs.tilesets_ && lhs.switches_ == rhs.switches_ && lhs.variables_ == rhs.variables_ && lhs.animations_ == rhs.animations_ && lhs.menu_themes_ == rhs.menu_themes_ && lhs.charsets_ == rhs.charsets_ && lhs.chipsets_ == rhs.chipsets_ && lhs.musics_ == rhs.musics_ && lhs.sounds_ == rhs.sounds_ && lhs.panoramas_ == rhs.panoramas_ && lhs.pictures_ == rhs.pictures_ && lhs.animation_files == rhs.animation_files;
+        return lhs.developer_ == rhs.developer_ && lhs.summary_ == rhs.summary_ && lhs.map_policy_ == rhs.map_policy_ && lhs.asset_policy_ == rhs.asset_policy_ && lhs.maps_ == rhs.maps_ && lhs.connections_ == rhs.connections_ && lhs.common_events_ == rhs.common_events_ && lhs.tilesets_ == rhs.tilesets_ && lhs.switches_ == rhs.switches_ && lhs.variables_ == rhs.variables_ && lhs.animations_ == rhs.animations_ && lhs.menu_themes_ == rhs.menu_themes_ && lhs.charsets_ == rhs.charsets_ && lhs.chipsets_ == rhs.chipsets_ && lhs.musics_ == rhs.musics_ && lhs.sounds_ == rhs.sounds_ && lhs.panoramas_ == rhs.panoramas_ && lhs.pictures_ == rhs.pictures_ && lhs.animation_files_ == rhs.animation_files_;
     }
     inline bool operator!=(const Changelog& lhs, const Changelog& rhs) {
         return !(lhs == rhs);

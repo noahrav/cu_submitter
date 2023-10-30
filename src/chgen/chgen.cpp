@@ -572,7 +572,7 @@ namespace chgen {
         changelog->sounds_ = add_assets(base_path, modified_path, data::AssetCategory::SOUND);
         changelog->panoramas_ = add_assets(base_path, modified_path, data::AssetCategory::PANORAMA);
         changelog->pictures_ = add_assets(base_path, modified_path, data::AssetCategory::PICTURE);
-        changelog->animation_files = add_assets(base_path, modified_path, data::AssetCategory::BATTLE_ANIMATION);
+        changelog->animation_files_ = add_assets(base_path, modified_path, data::AssetCategory::BATTLE_ANIMATION);
 
 
         return changelog;
