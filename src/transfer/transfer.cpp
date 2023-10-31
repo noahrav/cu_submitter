@@ -106,6 +106,8 @@ namespace transfer {
     }
 
     void DevbuildTransferer::transferMaps(void) {
+        auto blank_map = lcf::rpg::Map();
+
         for (const auto& map: transferChangelog_->maps_) {
             const auto origin_map = origin_path_ / fs::path("Map" + data::id_string(map.id_) + ".lmu");
             const auto destination_map = destination_path_ / fs::path("Map" + data::id_string(map.id_) + ".lmu");
@@ -114,7 +116,10 @@ namespace transfer {
             case data::Status::REMOVED:
                 log("Removing " + std::string(destination_map));
 
-                //TODO Reset to blank map
+                //Reset to blank map
+                if (!lcf::LMU_Reader::Save(lcf::ToStringView(std::string(destination_map)), blank_map, lcf::EngineVersion::e2k3)) {
+                    error("Could not reset " + std::string(destination_map));
+                }
                 break;
             case data::Status::MODIFIED:
                 log("Updating " + std::string(destination_map));
@@ -356,14 +361,9 @@ namespace transfer {
         // Write destination_db_ in database file
         lcf::LDB_Reader::PrepareSave(*destination_db_);
 
-        std::ofstream destination_db_file;
-        destination_db_file.open(std::string(destination_path_ / fs::path("RPG_RT.ldb")));
-
-        if (!lcf::LDB_Reader::Save(destination_db_file, *destination_db_)) {
+        if (!lcf::LDB_Reader::Save(lcf::ToStringView(std::string(destination_path_ / fs::path("RPG_RT.ldb"))), *destination_db_)) {
             error("Could not write destination database");
         }
-
-        destination_db_file.close();
     }
 
     void DevbuildTransferer::exportChangelog() {
