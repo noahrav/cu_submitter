@@ -3,6 +3,10 @@
 namespace transfer {
 
     std::shared_ptr<data::Changelog> DevbuildTransferer::transferChangelog_;
+
+    std::unique_ptr<lcf::rpg::Database> DevbuildTransferer::origin_db_;
+    std::unique_ptr<lcf::rpg::Database> DevbuildTransferer::destination_db_;
+
     std::string DevbuildTransferer::base_path_;
     std::string DevbuildTransferer::origin_path_;
     std::string DevbuildTransferer::destination_path_;
@@ -102,15 +106,15 @@ namespace transfer {
     }
 
     void DevbuildTransferer::transferMaps(void) {
-        for (const auto& ce: transferChangelog_->maps_) {
-            const auto origin_map = origin_path_ / fs::path("Map" + data::id_string(ce.id_) + ".lmu");
-            const auto destination_map = destination_path_ / fs::path("Map" + data::id_string(ce.id_) + ".lmu");
+        for (const auto& map: transferChangelog_->maps_) {
+            const auto origin_map = origin_path_ / fs::path("Map" + data::id_string(map.id_) + ".lmu");
+            const auto destination_map = destination_path_ / fs::path("Map" + data::id_string(map.id_) + ".lmu");
 
-            switch(ce.status_) {
+            switch(map.status_) {
             case data::Status::REMOVED:
                 log("Removing " + std::string(destination_map));
 
-                //TODO: Reset to blank ce
+                //TODO Reset to blank map
                 break;
             case data::Status::MODIFIED:
                 log("Updating " + std::string(destination_map));
@@ -127,8 +131,11 @@ namespace transfer {
     }
 
     void DevbuildTransferer::transferCE(void) {
+        auto blank_ce = lcf::rpg::CommonEvent();
+        blank_ce.trigger = lcf::rpg::CommonEvent::Trigger::Trigger_call;
+
         for (const auto& ce: transferChangelog_->common_events_) {
-            const auto origin_ce = origin_db_->commonevents[ce.id_];
+            const auto origin_ce = origin_db_->commonevents[ce.id_ - 1];
 
             if (origin_ce.ID != ce.id_) {
                 error("IDs are not properly ordered");
@@ -139,25 +146,29 @@ namespace transfer {
             case data::Status::REMOVED:
                 log("Removing Common Event " + data::id_string(ce.id_));
 
-                //TODO: Reset to blank ce
+                //Reset to blank ce
+                blank_ce.ID = ce.id_;
+                destination_db_->commonevents[ce.id_ - 1] = blank_ce;
                 break;
             case data::Status::MODIFIED:
                 log("Updating Common Event " + data::id_string(ce.id_));
 
-                destination_db_->commonevents[ce.id_] = origin_ce;
+                destination_db_->commonevents[ce.id_ - 1] = origin_ce;
                 break;
             case data::Status::ADDED:
                 log("Adding Common Event " + data::id_string(ce.id_));
 
-                destination_db_->commonevents[ce.id_] = origin_ce;
+                destination_db_->commonevents[ce.id_ - 1] = origin_ce;
                 break;
             }
         }
     }
 
     void DevbuildTransferer::transferTilesets(void) {
+        auto blank_tileset = lcf::rpg::Chipset();
+
         for (const auto& tileset: transferChangelog_->tilesets_) {
-            const auto origin_tileset = origin_db_->chipsets[tileset.id_];
+            const auto origin_tileset = origin_db_->chipsets[tileset.id_ - 1];
 
             if (origin_tileset.ID != tileset.id_) {
                 error("IDs are not properly ordered");
@@ -166,27 +177,31 @@ namespace transfer {
 
             switch(tileset.status_) {
             case data::Status::REMOVED:
-                log("Removing Tileset " + data::id_string(tileset.id_));
+                log("Removing Tileset " + data::id_string(tileset.id_ - 1));
 
-                //TODO: Reset to blank tileset entry
+                //Reset to blank tileset entry
+                blank_tileset.ID = tileset.id_;
+                destination_db_->chipsets[tileset.id_ - 1] = blank_tileset;
                 break;
             case data::Status::MODIFIED:
                 log("Updating Tileset " + data::id_string(tileset.id_));
 
-                destination_db_->chipsets[tileset.id_] = origin_tileset;
+                destination_db_->chipsets[tileset.id_ - 1] = origin_tileset;
                 break;
             case data::Status::ADDED:
                 log("Adding Tileset " + data::id_string(tileset.id_));
 
-                destination_db_->chipsets[tileset.id_] = origin_tileset;
+                destination_db_->chipsets[tileset.id_ - 1] = origin_tileset;
                 break;
             }
         }
     }
 
     void DevbuildTransferer::transferSwitches(void) {
+        auto blank_switch = lcf::rpg::Switch();
+
         for (const auto& switch_: transferChangelog_->switches_) {
-            const auto origin_switch = origin_db_->switches[switch_.id_];
+            const auto origin_switch = origin_db_->switches[switch_.id_ - 1];
 
             if (origin_switch.ID != switch_.id_) {
                 error("IDs are not properly ordered");
@@ -197,25 +212,29 @@ namespace transfer {
             case data::Status::REMOVED:
                 log("Removing Switch " + data::id_string(switch_.id_));
 
-                //TODO: Reset to blank switch
+                //Reset to blank switch
+                blank_switch.ID = switch_.id_;
+                destination_db_->switches[switch_.id_ - 1] = blank_switch;
                 break;
             case data::Status::MODIFIED:
                 log("Updating Switch " + data::id_string(switch_.id_));
 
-                destination_db_->switches[switch_.id_] = origin_switch;
+                destination_db_->switches[switch_.id_ - 1] = origin_switch;
                 break;
             case data::Status::ADDED:
                 log("Adding Switch " + data::id_string(switch_.id_));
 
-                destination_db_->switches[switch_.id_] = origin_switch;
+                destination_db_->switches[switch_.id_ - 1] = origin_switch;
                 break;
             }
         }
     }
 
     void DevbuildTransferer::transferVariables(void) {
+        auto blank_variable = lcf::rpg::Variable();
+
         for (const auto& variable: transferChangelog_->variables_) {
-            const auto origin_variable = origin_db_->variables[variable.id_];
+            const auto origin_variable = origin_db_->variables[variable.id_ - 1];
 
             if (origin_variable.ID != variable.id_) {
                 error("IDs are not properly ordered");
@@ -226,25 +245,30 @@ namespace transfer {
             case data::Status::REMOVED:
                 log("Removing Variable " + data::id_string(variable.id_));
 
-                //TODO: Reset to blank variable
+                //Reset to blank variable
+                blank_variable.ID = variable.id_;
+                destination_db_->variables[variable.id_ - 1] = blank_variable;
                 break;
             case data::Status::MODIFIED:
                 log("Updating Variable " + data::id_string(variable.id_));
 
-                destination_db_->variables[variable.id_] = origin_variable;
+                destination_db_->variables[variable.id_ - 1] = origin_variable;
                 break;
             case data::Status::ADDED:
                 log("Adding Variable " + data::id_string(variable.id_));
 
-                destination_db_->variables[variable.id_] = origin_variable;
+                destination_db_->variables[variable.id_ - 1] = origin_variable;
                 break;
             }
         }
     }
 
     void DevbuildTransferer::transferAnimations(void) {
+        auto blank_animation = lcf::rpg::Animation();
+        auto blank_anim_frame = lcf::rpg::AnimationFrame();
+
         for (const auto& animation: transferChangelog_->animations_) {
-            const auto origin_animation = origin_db_->animations[animation.id_];
+            const auto origin_animation = origin_db_->animations[animation.id_ - 1];
 
             if (origin_animation.ID != animation.id_) {
                 error("IDs are not properly ordered");
@@ -255,17 +279,24 @@ namespace transfer {
             case data::Status::REMOVED:
                 log("Removing Animation " + data::id_string(animation.id_));
 
-                //TODO: Reset to blank animation entry
+                //Reset to blank animation entry
+                blank_animation.ID = animation.id_;
+                for (int i = 0; i < 20; i++) {
+                    blank_anim_frame.ID = i + 1;
+                    blank_animation.frames[i] = blank_anim_frame;
+                }
+
+                destination_db_->animations[animation.id_ - 1] = blank_animation;
                 break;
             case data::Status::MODIFIED:
                 log("Updating Animation " + data::id_string(animation.id_));
 
-                destination_db_->animations[animation.id_] = origin_animation;
+                destination_db_->animations[animation.id_ - 1] = origin_animation;
                 break;
             case data::Status::ADDED:
                 log("Adding Animation " + data::id_string(animation.id_));
 
-                destination_db_->animations[animation.id_] = origin_animation;
+                destination_db_->animations[animation.id_ - 1] = origin_animation;
                 break;
             }
         }
@@ -321,6 +352,18 @@ namespace transfer {
         transferSwitches();
         transferVariables();
         transferAnimations();
+
+        // Write destination_db_ in database file
+        lcf::LDB_Reader::PrepareSave(*destination_db_);
+
+        std::ofstream destination_db_file;
+        destination_db_file.open(std::string(destination_path_ / fs::path("RPG_RT.ldb")));
+
+        if (!lcf::LDB_Reader::Save(destination_db_file, *destination_db_)) {
+            error("Could not write destination database");
+        }
+
+        destination_db_file.close();
     }
 
     void DevbuildTransferer::exportChangelog() {
