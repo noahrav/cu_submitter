@@ -7,6 +7,9 @@ namespace transfer {
     std::unique_ptr<lcf::rpg::Database> DevbuildTransferer::origin_db_;
     std::unique_ptr<lcf::rpg::Database> DevbuildTransferer::destination_db_;
 
+    std::unique_ptr<lcf::rpg::TreeMap> origin_maptree_;
+    std::unique_ptr<lcf::rpg::TreeMap> destination_maptree_;
+
     std::string DevbuildTransferer::base_path_;
     std::string DevbuildTransferer::origin_path_;
     std::string DevbuildTransferer::destination_path_;
@@ -105,7 +108,7 @@ namespace transfer {
         }
     }
 
-    void DevbuildTransferer::transferMaps(void) {
+    void DevbuildTransferer::transferMaps() {
         auto blank_map = lcf::rpg::Map();
 
         for (const auto& map: transferChangelog_->maps_) {
@@ -135,7 +138,7 @@ namespace transfer {
         }
     }
 
-    void DevbuildTransferer::transferCE(void) {
+    void DevbuildTransferer::transferCE() {
         auto blank_ce = lcf::rpg::CommonEvent();
         blank_ce.trigger = lcf::rpg::CommonEvent::Trigger::Trigger_call;
 
@@ -169,7 +172,7 @@ namespace transfer {
         }
     }
 
-    void DevbuildTransferer::transferTilesets(void) {
+    void DevbuildTransferer::transferTilesets() {
         auto blank_tileset = lcf::rpg::Chipset();
 
         for (const auto& tileset: transferChangelog_->tilesets_) {
@@ -202,7 +205,7 @@ namespace transfer {
         }
     }
 
-    void DevbuildTransferer::transferSwitches(void) {
+    void DevbuildTransferer::transferSwitches() {
         auto blank_switch = lcf::rpg::Switch();
 
         for (const auto& switch_: transferChangelog_->switches_) {
@@ -235,7 +238,7 @@ namespace transfer {
         }
     }
 
-    void DevbuildTransferer::transferVariables(void) {
+    void DevbuildTransferer::transferVariables() {
         auto blank_variable = lcf::rpg::Variable();
 
         for (const auto& variable: transferChangelog_->variables_) {
@@ -268,7 +271,7 @@ namespace transfer {
         }
     }
 
-    void DevbuildTransferer::transferAnimations(void) {
+    void DevbuildTransferer::transferAnimations() {
         auto blank_animation = lcf::rpg::Animation();
         auto blank_anim_frame = lcf::rpg::AnimationFrame();
 
@@ -302,6 +305,40 @@ namespace transfer {
                 log("Adding Animation " + data::id_string(animation.id_));
 
                 destination_db_->animations[animation.id_ - 1] = origin_animation;
+                break;
+            }
+        }
+    }
+
+    void DevbuildTransferer::transferMapTree() {
+        auto blank_mapInfo = lcf::rpg::MapInfo();
+
+        for (const auto& map: transferChangelog_->maps_) {
+            const auto origin_mapInfo = origin_maptree_->maps[map.id_ - 1];
+
+            if (origin_mapInfo.ID != map.id_) {
+                error("IDs are not properly ordered");
+                continue;
+            }
+
+            switch(map.status_) {
+            case data::Status::REMOVED:
+                log("Removing Map entry " + data::id_string(map.id_));
+
+                //Reset to blank animation entry
+                blank_mapInfo.ID = map.id_;
+
+                destination_maptree_->maps[map.id_ - 1] = blank_mapInfo;
+                break;
+            case data::Status::MODIFIED:
+                log("Updating Map entry " + data::id_string(map.id_));
+
+                destination_maptree_->maps[map.id_ - 1] = origin_mapInfo;
+                break;
+            case data::Status::ADDED:
+                log("Adding Map entry " + data::id_string(map.id_));
+
+                destination_maptree_->maps[map.id_ - 1] = origin_mapInfo;
                 break;
             }
         }
@@ -363,6 +400,16 @@ namespace transfer {
 
         if (!lcf::LDB_Reader::Save(lcf::ToStringView(std::string(destination_path_ / fs::path("RPG_RT.ldb"))), *destination_db_)) {
             error("Could not write destination database");
+        }
+
+        // map tree
+        origin_maptree_ = lcf::LMT_Reader::Load(std::string(origin_path_ / fs::path("RPG_RT.lmt")));
+        destination_maptree_ = lcf::LMT_Reader::Load(std::string(destination_path_ / fs::path("RPG_RT.lmt")));
+
+        transferMapTree();
+
+        if (!lcf::LMT_Reader::Save(lcf::ToStringView(std::string(destination_path_ / fs::path("RPG_RT.lmt"))), *destination_maptree_, lcf::EngineVersion::e2k3)) {
+            error("Could not write destination map tree");
         }
     }
 

@@ -48,30 +48,37 @@ namespace transfer {
          */
         static void transferMaps();
         /**
-         * Transer common events
+         * Transfer common events
          */
         static void transferCE();
         /**
-         * Transer tileset entries
+         * Transfer tileset entries
          */
         static void transferTilesets();
         /**
-         * Transer switches
+         * Transfer switches
          */
         static void transferSwitches();
         /**
-         * Transer variables
+         * Transfer variables
          */
         static void transferVariables();
         /**
-         * Transer animation entries
+         * Transfer animation entries
          */
         static void transferAnimations();
+        /**
+         * Transfer map tree data
+        */
+        static void transferMapTree();
 
         static std::shared_ptr<data::Changelog> transferChangelog_;
 
         static std::unique_ptr<lcf::rpg::Database> origin_db_;
         static std::unique_ptr<lcf::rpg::Database> destination_db_;
+
+        static std::unique_ptr<lcf::rpg::TreeMap> origin_maptree_;
+        static std::unique_ptr<lcf::rpg::TreeMap> destination_maptree_;
 
         static std::string base_path_;
         static std::string origin_path_;
