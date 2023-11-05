@@ -97,12 +97,12 @@ namespace transfer {
             case data::Status::MODIFIED:
                 log("Updating " + std::string(destination_asset));
 
-                fs::copy(origin_asset, destination_asset, fs::copy_options::update_existing);
+                fs::copy(origin_asset, destination_asset, fs::copy_options::overwrite_existing);
                 break;
             case data::Status::ADDED:
                 log("Adding " + std::string(destination_asset));
 
-                fs::copy(origin_asset, destination_asset, fs::copy_options::update_existing);
+                fs::copy(origin_asset, destination_asset, fs::copy_options::overwrite_existing);
                 break;
             }
         }
@@ -127,12 +127,12 @@ namespace transfer {
             case data::Status::MODIFIED:
                 log("Updating " + std::string(destination_map));
 
-                fs::copy(origin_map, destination_map, fs::copy_options::update_existing);
+                fs::copy(origin_map, destination_map, fs::copy_options::overwrite_existing);
                 break;
             case data::Status::ADDED:
                 log("Adding " + std::string(destination_map));
 
-                fs::copy(origin_map, destination_map, fs::copy_options::update_existing);
+                fs::copy(origin_map, destination_map, fs::copy_options::overwrite_existing);
                 break;
             }
         }

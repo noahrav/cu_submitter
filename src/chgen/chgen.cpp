@@ -107,26 +107,38 @@ namespace chgen {
         auto modified_asset_content = list_directory_content(std::string(modified_path / fs::path(folder)));
 
         for (const auto &asset: base_asset_content) {
+            const auto asset_name = asset.substr(0, asset.find_first_of('.'));
+            if (asset_name.rfind("record_player_", 0) == 0) {
+                // ignore record player assets
+                continue;
+            }
+
             if (std::find(begin(modified_asset_content), end(modified_asset_content), asset) ==
                 end(modified_asset_content)) {
                 // asset removed
                 data::Asset changelog_asset;
                 changelog_asset.category_ = category;
                 changelog_asset.status_ = data::Status::REMOVED;
-                changelog_asset.name_ = asset.substr(0, asset.find_first_of('.'));
+                changelog_asset.name_ = asset_name;
                 changelog_asset.filename_ = asset;
                 assets.push_back(changelog_asset);
             }
         }
 
         for (const auto &asset: modified_asset_content) {
+            const auto asset_name = asset.substr(0, asset.find_first_of('.'));
+            if (asset_name.rfind("record_player_", 0) == 0) {
+                // ignore record player assets
+                continue;
+            }
+
             if (std::find(begin(base_asset_content), end(base_asset_content), asset) ==
                 end(base_asset_content)) {
                 // asset added
                 data::Asset changelog_asset;
                 changelog_asset.category_ = category;
                 changelog_asset.status_ = data::Status::ADDED;
-                changelog_asset.name_ = asset.substr(0, asset.find_first_of('.'));
+                changelog_asset.name_ = asset_name;
                 changelog_asset.filename_ = asset;
                 assets.push_back(changelog_asset);
             } else {
@@ -148,7 +160,7 @@ namespace chgen {
                         data::Asset changelog_asset;
                         changelog_asset.category_ = category;
                         changelog_asset.status_ = data::Status::MODIFIED;
-                        changelog_asset.name_ = asset.substr(0, asset.find_first_of('.'));
+                        changelog_asset.name_ = asset_name;
                         changelog_asset.filename_ = asset;
                         assets.push_back(changelog_asset);
                     }
@@ -488,6 +500,11 @@ namespace chgen {
             }
 
             const int map_id = std::stoi(map.substr(3, map.find_first_of('.')));
+
+            if (map_id == 7) {
+                // ignore record player
+                continue;
+            }
 
             auto base_map = base_map_tree->maps[map_id];
             auto modified_map = modified_map_tree->maps[map_id];

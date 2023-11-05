@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
             std::cin >> confirm;
             if (confirm == 'N' || confirm == 'n') {
                 error("Transfer cancelled");
-                return 1;
+                return 8;
             }
 
             transfer::DevbuildTransferer::transfer(to);
