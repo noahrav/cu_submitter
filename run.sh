@@ -1,1 +1,1 @@
-cmake -B build -S . && cd build && make && echo "[========================]" && ./cu_submitter
+cmake -B build -S . && cd build && make && echo "[========================]" && ./cu_submitter --help
