@@ -10,7 +10,8 @@ set(PROJECT_SOURCES
         src/utils/error.cpp src/utils/error.h 
         src/utils/log.cpp src/utils/log.h
         src/utils/print.cpp src/utils/print.h
-        src/transfer/transfer.cpp src/transfer/transfer.h)
+        src/transfer/transfer.cpp src/transfer/transfer.h
+        src/utils/utils.cpp src/utils/utils.h)
 
 set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/cmake/Qt5")
 

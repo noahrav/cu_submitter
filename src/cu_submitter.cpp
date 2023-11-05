@@ -53,6 +53,22 @@ int main(int argc, char* argv[])
 
             const auto changelog = transfer::DevbuildTransferer::getTransferChangelog(base, from);
 
+            if (changelog == nullptr) {
+                error("Could not generate changelog");
+                return 1;
+            }
+
+            std::cout << "Changelog: \n";
+            std::cout << changelog->stringify() << "\n\n";
+
+            std::cout << "Confirm transfer ? (O/N) ";
+            char confirm;
+            std::cin >> confirm;
+            if (confirm == 'N' || confirm == 'n') {
+                error("Transfer cancelled");
+                return 1;
+            }
+
             transfer::DevbuildTransferer::transfer(to);
 
             transfer::DevbuildTransferer::exportChangelog();

@@ -3,6 +3,7 @@
 #include <utility>
 #include "../utils/error.h"
 #include "../utils/log.h"
+#include "../utils/utils.h"
 
 using Commands = lcf::rpg::EventCommand::Code;
 
@@ -131,13 +132,19 @@ namespace chgen {
             } else {
                 // asset modified
                 try {
-                    const auto base_lastwritetime = fs::last_write_time(
-                            std::string(base_path / fs::path(folder) / fs::path(asset)));
-                    const auto modified_lastwritetime = fs::last_write_time(std::string(
-                            modified_path / fs::path(folder) / fs::path(asset)));
+                    const auto base_asset_path = base_path / fs::path(folder) / fs::path(asset);
+                    const auto modified_asset_path = modified_path / fs::path(folder) / fs::path(asset);
+
+                    const auto base_lastwritetime = fs::last_write_time(base_asset_path);
+                    const auto modified_lastwritetime = fs::last_write_time(modified_asset_path);
 
 
                     if (base_lastwritetime != modified_lastwritetime) {
+                        if (utils::compareFiles(base_asset_path, modified_asset_path)) {
+                            // asset unchanged
+                            continue;
+                        }
+
                         data::Asset changelog_asset;
                         changelog_asset.category_ = category;
                         changelog_asset.status_ = data::Status::MODIFIED;
@@ -484,6 +491,11 @@ namespace chgen {
 
             auto base_map = base_map_tree->maps[map_id];
             auto modified_map = modified_map_tree->maps[map_id];
+
+            if (base_map == modified_map) {
+                // map unchanged
+                continue;
+            }
 
             const std::string modified_map_name = modified_map.name.data();
             const std::string base_map_name = base_map.name.data();

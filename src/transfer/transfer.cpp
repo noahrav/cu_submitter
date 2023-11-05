@@ -7,8 +7,8 @@ namespace transfer {
     std::unique_ptr<lcf::rpg::Database> DevbuildTransferer::origin_db_;
     std::unique_ptr<lcf::rpg::Database> DevbuildTransferer::destination_db_;
 
-    std::unique_ptr<lcf::rpg::TreeMap> origin_maptree_;
-    std::unique_ptr<lcf::rpg::TreeMap> destination_maptree_;
+    std::unique_ptr<lcf::rpg::TreeMap> DevbuildTransferer::origin_maptree_;
+    std::unique_ptr<lcf::rpg::TreeMap> DevbuildTransferer::destination_maptree_;
 
     std::string DevbuildTransferer::base_path_;
     std::string DevbuildTransferer::origin_path_;
@@ -146,7 +146,7 @@ namespace transfer {
             const auto origin_ce = origin_db_->commonevents[ce.id_ - 1];
 
             if (origin_ce.ID != ce.id_) {
-                error("IDs are not properly ordered");
+                error("Common Events: IDs are not properly ordered: " + data::id_string(origin_ce.ID) + " != " + data::id_string(ce.id_));
                 continue;
             }
 
@@ -179,7 +179,7 @@ namespace transfer {
             const auto origin_tileset = origin_db_->chipsets[tileset.id_ - 1];
 
             if (origin_tileset.ID != tileset.id_) {
-                error("IDs are not properly ordered");
+                error("Tilesets: IDs are not properly ordered: " + data::id_string(origin_tileset.ID) + " != " + data::id_string(tileset.id_));
                 continue;
             }
 
@@ -212,7 +212,7 @@ namespace transfer {
             const auto origin_switch = origin_db_->switches[switch_.id_ - 1];
 
             if (origin_switch.ID != switch_.id_) {
-                error("IDs are not properly ordered");
+                error("Switches: IDs are not properly ordered: " + data::id_string(origin_switch.ID) + " != " + data::id_string(switch_.id_));
                 continue;
             }
 
@@ -245,7 +245,7 @@ namespace transfer {
             const auto origin_variable = origin_db_->variables[variable.id_ - 1];
 
             if (origin_variable.ID != variable.id_) {
-                error("IDs are not properly ordered");
+                error("Variables: IDs are not properly ordered: " + data::id_string(origin_variable.ID) + " != " + data::id_string(variable.id_));
                 continue;
             }
 
@@ -279,7 +279,7 @@ namespace transfer {
             const auto origin_animation = origin_db_->animations[animation.id_ - 1];
 
             if (origin_animation.ID != animation.id_) {
-                error("IDs are not properly ordered");
+                error("Animations: IDs are not properly ordered: " + data::id_string(origin_animation.ID) + " != " + data::id_string(animation.id_));
                 continue;
             }
 
@@ -314,10 +314,10 @@ namespace transfer {
         auto blank_mapInfo = lcf::rpg::MapInfo();
 
         for (const auto& map: transferChangelog_->maps_) {
-            const auto origin_mapInfo = origin_maptree_->maps[map.id_ - 1];
+            const auto origin_mapInfo = origin_maptree_->maps[map.id_];
 
             if (origin_mapInfo.ID != map.id_) {
-                error("IDs are not properly ordered");
+                error("Maps: IDs are not properly ordered: " + data::id_string(origin_mapInfo.ID) + " != " + data::id_string(map.id_));
                 continue;
             }
 
@@ -328,17 +328,17 @@ namespace transfer {
                 //Reset to blank animation entry
                 blank_mapInfo.ID = map.id_;
 
-                destination_maptree_->maps[map.id_ - 1] = blank_mapInfo;
+                destination_maptree_->maps[map.id_] = blank_mapInfo;
                 break;
             case data::Status::MODIFIED:
                 log("Updating Map entry " + data::id_string(map.id_));
 
-                destination_maptree_->maps[map.id_ - 1] = origin_mapInfo;
+                destination_maptree_->maps[map.id_] = origin_mapInfo;
                 break;
             case data::Status::ADDED:
                 log("Adding Map entry " + data::id_string(map.id_));
 
-                destination_maptree_->maps[map.id_ - 1] = origin_mapInfo;
+                destination_maptree_->maps[map.id_] = origin_mapInfo;
                 break;
             }
         }
