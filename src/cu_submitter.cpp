@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
             usage_message += "-----\n";
             usage_message += "--help | --usage : prints this message\n";
             usage_message += "--chgen <base_path> <modified_path> : generates a changelog text file\n";
-            usage_message += "--transfer <unmodified_copy_path> <modified_copy_path> <destination_path>";
+            usage_message += "--transfer <unmodified_copy_path> <modified_copy_path> <destination_path>: : transfers the modified files to the destination path\n";
 
             print(usage_message);
         } else if (option == "--chgen") {
