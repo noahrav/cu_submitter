@@ -3,6 +3,7 @@
 #include <utility>
 #include "../utils/error.h"
 #include "../utils/log.h"
+#include "../utils/utils.h"
 
 using Commands = lcf::rpg::EventCommand::Code;
 
@@ -106,40 +107,61 @@ namespace chgen {
         auto modified_asset_content = list_directory_content(std::string(modified_path / fs::path(folder)));
 
         for (const auto &asset: base_asset_content) {
+            const auto asset_name = asset.substr(0, asset.find_first_of('.'));
+            if (asset_name.rfind("record_player_", 0) == 0) {
+                // ignore record player assets
+                continue;
+            }
+
             if (std::find(begin(modified_asset_content), end(modified_asset_content), asset) ==
                 end(modified_asset_content)) {
                 // asset removed
                 data::Asset changelog_asset;
                 changelog_asset.category_ = category;
                 changelog_asset.status_ = data::Status::REMOVED;
-                changelog_asset.name_ = asset.substr(0, asset.find_first_of('.'));
+                changelog_asset.name_ = asset_name;
+                changelog_asset.filename_ = asset;
                 assets.push_back(changelog_asset);
             }
         }
 
         for (const auto &asset: modified_asset_content) {
+            const auto asset_name = asset.substr(0, asset.find_first_of('.'));
+            if (asset_name.rfind("record_player_", 0) == 0) {
+                // ignore record player assets
+                continue;
+            }
+
             if (std::find(begin(base_asset_content), end(base_asset_content), asset) ==
                 end(base_asset_content)) {
                 // asset added
                 data::Asset changelog_asset;
                 changelog_asset.category_ = category;
                 changelog_asset.status_ = data::Status::ADDED;
-                changelog_asset.name_ = asset.substr(0, asset.find_first_of('.'));
+                changelog_asset.name_ = asset_name;
+                changelog_asset.filename_ = asset;
                 assets.push_back(changelog_asset);
             } else {
                 // asset modified
                 try {
-                    const auto base_lastwritetime = fs::last_write_time(
-                            std::string(base_path / fs::path(folder) / fs::path(asset)));
-                    const auto modified_lastwritetime = fs::last_write_time(std::string(
-                            modified_path / fs::path(folder) / fs::path(asset)));
+                    const auto base_asset_path = base_path / fs::path(folder) / fs::path(asset);
+                    const auto modified_asset_path = modified_path / fs::path(folder) / fs::path(asset);
+
+                    const auto base_lastwritetime = fs::last_write_time(base_asset_path);
+                    const auto modified_lastwritetime = fs::last_write_time(modified_asset_path);
 
 
                     if (base_lastwritetime != modified_lastwritetime) {
+                        if (utils::compareFiles(base_asset_path, modified_asset_path)) {
+                            // asset unchanged
+                            continue;
+                        }
+
                         data::Asset changelog_asset;
                         changelog_asset.category_ = category;
                         changelog_asset.status_ = data::Status::MODIFIED;
-                        changelog_asset.name_ = asset.substr(0, asset.find_first_of('.'));
+                        changelog_asset.name_ = asset_name;
+                        changelog_asset.filename_ = asset;
                         assets.push_back(changelog_asset);
                     }
                 } catch (const std::exception &e) {
@@ -396,6 +418,8 @@ namespace chgen {
      */
     std::shared_ptr<data::Changelog>
     ChangelogGenerator::scan(const std::string &base_path, const std::string &modified_path) {
+        log("Scanning changes between " + base_path + " and " + modified_path + "...");
+
         auto base_content = list_directory_content(base_path);
         if (base_content.empty()) {
             return nullptr;
@@ -477,8 +501,18 @@ namespace chgen {
 
             const int map_id = std::stoi(map.substr(3, map.find_first_of('.')));
 
+            if (map_id == 7) {
+                // ignore record player
+                continue;
+            }
+
             auto base_map = base_map_tree->maps[map_id];
             auto modified_map = modified_map_tree->maps[map_id];
+
+            if (base_map == modified_map) {
+                // map unchanged
+                continue;
+            }
 
             const std::string modified_map_name = modified_map.name.data();
             const std::string base_map_name = base_map.name.data();
@@ -567,7 +601,7 @@ namespace chgen {
         changelog->sounds_ = add_assets(base_path, modified_path, data::AssetCategory::SOUND);
         changelog->panoramas_ = add_assets(base_path, modified_path, data::AssetCategory::PANORAMA);
         changelog->pictures_ = add_assets(base_path, modified_path, data::AssetCategory::PICTURE);
-        changelog->animation_files = add_assets(base_path, modified_path, data::AssetCategory::BATTLE_ANIMATION);
+        changelog->animation_files_ = add_assets(base_path, modified_path, data::AssetCategory::BATTLE_ANIMATION);
 
 
         return changelog;
@@ -576,17 +610,18 @@ namespace chgen {
     /**
      * @brief Generates a plain text changelog file from a Changelog object. The name of the file will be <developer name>_<date>_changelog.txt
      * @param changelog The changelog we want to save in a file
+     * @param at The path where we want to save the file. If empty, the file will be saved in the current directory.
      */
-    void ChangelogGenerator::generate(const std::shared_ptr<data::Changelog> &changelog) {
+    void ChangelogGenerator::generate(const std::shared_ptr<data::Changelog> &changelog, const std::string& at) {
         std::string date = data::date_string(changelog->date_);
         std::string date_formatted = date.substr(0, 2) + date.substr(3, 3) + date.substr(7, date.length());
 
-        std::string filename = changelog->developer_ + "_" + date_formatted + "_changelog.txt";
+        std::string filename = at / fs::path(changelog->developer_ + "_" + date_formatted + "_changelog.txt");
 
         // this ensures that we don't overwrite any existing file
         for (int i = 2; fs::exists(filename); i++) {
-            filename = changelog->developer_ + "_" + date_formatted + "_changelog_" +
-                       std::to_string(i) + ".txt";
+            filename = at / fs::path(changelog->developer_ + "_" + date_formatted + "_changelog_" +
+                       std::to_string(i) + ".txt");
         }
 
         std::ofstream file;

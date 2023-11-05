@@ -5,10 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(PROJECT_SOURCES
         src/cu_submitter.cpp
-        src/chgen/chgen.cpp
-        src/chgen/chgen.h
-        src/data/changelog.cpp
-        src/data/changelog.h src/utils/error.cpp src/utils/error.h src/utils/log.cpp src/utils/log.h)
+        src/chgen/chgen.cpp src/chgen/chgen.h
+        src/data/changelog.cpp src/data/changelog.h 
+        src/utils/error.cpp src/utils/error.h 
+        src/utils/log.cpp src/utils/log.h
+        src/utils/print.cpp src/utils/print.h
+        src/transfer/transfer.cpp src/transfer/transfer.h
+        src/utils/utils.cpp src/utils/utils.h)
 
 set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/cmake/Qt5")
 
