@@ -1,6 +1,7 @@
 include(FetchContent)
 
 set(LIBLCF_VERSION 0.8)
+set(QT_VERSION v5.15.8-lts-lgpl)
 
 FetchContent_Declare(
   liblcf
@@ -10,7 +11,7 @@ FetchContent_Declare(
 
 FetchContent_Declare(
   qt5
-  GIT_REPOSITORY https://github.com/qt/qt5.git
+  URL "https://github.com/EasyRPG/liblcf/archive/v${QT_VERSION}.zip"
   GIT_TAG        master
   FIND_PACKAGE_ARGS NAMES Qt5::Widgets
 )
