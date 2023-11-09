@@ -18,6 +18,8 @@ set(PROJECT_SOURCES
 add_executable(cu_submitter
         ${PROJECT_SOURCES})
 
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+
 target_link_libraries(cu_submitter
         Qt5::Widgets)
 
