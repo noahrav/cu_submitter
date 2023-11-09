@@ -19,7 +19,5 @@ add_executable(cu_submitter
         ${PROJECT_SOURCES})
 
 target_link_libraries(cu_submitter
-        Qt5::Widgets)
-
-target_link_libraries(cu_submitter
+        PRIVATE Qt5::Widgets
         lcf)
