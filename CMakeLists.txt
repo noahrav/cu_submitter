@@ -16,6 +16,7 @@ set(PROJECT_SOURCES
         src/utils/utils.cpp src/utils/utils.h)
 
 set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/cmake/Qt5")
+set(liblcf_DIR "liblcf-build")
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 find_package(liblcf REQUIRED)
