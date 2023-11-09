@@ -11,7 +11,7 @@ FetchContent_Declare(
 
 FetchContent_Declare(
   qt5
-  URL "https://github.com/EasyRPG/liblcf/archive/v${QT_VERSION}.zip"
+  URL "https://github.com/EasyRPG/liblcf/archive/${QT_VERSION}.zip"
   GIT_TAG        master
   FIND_PACKAGE_ARGS NAMES Qt5::Widgets
 )
