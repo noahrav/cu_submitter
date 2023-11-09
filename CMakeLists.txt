@@ -15,6 +15,8 @@ set(PROJECT_SOURCES
         src/transfer/transfer.cpp src/transfer/transfer.h
         src/utils/utils.cpp src/utils/utils.h)
 
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
+
 add_executable(cu_submitter
         ${PROJECT_SOURCES})
 
