@@ -27,19 +27,6 @@ jobs:
         sudo apt update
         sudo apt -y install --no-install-recommends qtcreator qtbase5-dev qt5-qmake cmake
 
-    - name: build liblcf
-      run: |
-        sudo apt-get -y install --no-install-recommends git make automake pkg-config libtool g++ libexpat1-dev libicu-dev
-        cd ${{github.workspace}}/..
-        git clone https://github.com/EasyRPG/liblcf.git
-        cd liblcf
-        autoreconf -i
-        ./configure --prefix=/usr
-        make
-        sudo make install
-        cd ..
-        cd ${{github.workspace}}
-
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
