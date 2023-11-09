@@ -14,9 +14,8 @@ FetchContent_MakeAvailable(liblcf)
 FetchContent_Declare(
   qt5
   URL "https://github.com/qt/qtbase/archive/refs/tags/${QT_VERSION}.zip"
-  FIND_PACKAGE_ARGS NAMES Qt5 COMPONENTS Widgets
+  FIND_PACKAGE_ARGS NAMES Qt5
 )
 
-set(QT_FEATURE_gui true)
-set(QT_FEATURE_widgets true)
+set(BUILD_WIDGETS true)
 FetchContent_MakeAvailable(qt5)
