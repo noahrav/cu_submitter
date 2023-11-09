@@ -17,5 +17,6 @@ FetchContent_Declare(
   FIND_PACKAGE_ARGS NAMES Qt5
 )
 
-set(QT_FEATURE_widgets)
+set(QT_FEATURE_gui true)
+set(QT_FEATURE_widgets true)
 FetchContent_MakeAvailable(qt5)
