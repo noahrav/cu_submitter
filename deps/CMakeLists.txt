@@ -9,10 +9,12 @@ FetchContent_Declare(
   FIND_PACKAGE_ARGS NAMES lcf
 )
 
+FetchContent_MakeAvailable(liblcf)
+
 FetchContent_Declare(
   qt5
   URL "https://github.com/qt/qt5/archive/refs/tags/${QT_VERSION}.zip"
-  FIND_PACKAGE_ARGS Qt5 REQUIRED COMPONENTS Widgets
 )
 
-FetchContent_MakeAvailable(liblcf qt5)
+
+FetchContent_MakeAvailable(qt5)
