@@ -9,10 +9,4 @@ FetchContent_Declare(
   FIND_PACKAGE_ARGS NAMES lcf
 )
 
-FetchContent_Declare(
-  qt5
-  URL "https://github.com/qt/qtbase/archive/refs/tags/${QT_VERSION}.zip"
-  FIND_PACKAGE_ARGS NAMES Qt5
-)
-
-FetchContent_MakeAvailable(liblcf qt5)
+FetchContent_MakeAvailable(liblcf)
