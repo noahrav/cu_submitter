@@ -8,4 +8,11 @@ FetchContent_Declare(
   FIND_PACKAGE_ARGS NAMES lcf
 )
 
-FetchContent_MakeAvailable(liblcf)
+FetchContent_Declare(
+  qt5
+  GIT_REPOSITORY https://github.com/qt/qt5.git
+  GIT_TAG        master
+  FIND_PACKAGE_ARGS NAMES Qt5::Widgets
+)
+
+FetchContent_MakeAvailable(liblcf qt5)
