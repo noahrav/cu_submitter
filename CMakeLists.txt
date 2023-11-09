@@ -15,10 +15,6 @@ set(PROJECT_SOURCES
         src/transfer/transfer.cpp src/transfer/transfer.h
         src/utils/utils.cpp src/utils/utils.h)
 
-set(CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/cmake/Qt5")
-
-find_package(Qt5 REQUIRED COMPONENTS Widgets)
-
 add_executable(cu_submitter
         ${PROJECT_SOURCES})
 
