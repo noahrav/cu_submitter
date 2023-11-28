@@ -2,7 +2,7 @@ include(FetchContent)
 
 set(LIBLCF_VERSION 0.8)
 
-find_package(liblcf REQUIRED)
+find_package(liblcf)
 
 if (NOT liblcf_FOUND)
   FetchContent_Declare(
