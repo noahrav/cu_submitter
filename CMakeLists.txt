@@ -13,7 +13,8 @@ set(PROJECT_SOURCES
         src/utils/log.cpp src/utils/log.h
         src/utils/print.cpp src/utils/print.h
         src/transfer/transfer.cpp src/transfer/transfer.h
-        src/utils/utils.cpp src/utils/utils.h)
+        src/utils/utils.cpp src/utils/utils.h
+        src/submit/submit.cpp src/submit/submit.h)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
