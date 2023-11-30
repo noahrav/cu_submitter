@@ -2,12 +2,13 @@
 
 namespace submit {
 
-    static std::shared_ptr<data::Changelog> submissionChangelog_;
+    std::shared_ptr<data::Changelog> SubmissionBuilder::submissionChangelog_;
 
-    static std::string base_path_;
-    static std::string modified_path_;
+    std::string SubmissionBuilder::base_path_;
+    std::string SubmissionBuilder::modified_path_;
+    std::string SubmissionBuilder::archive_path_;
 
-    std::shared_ptr<data::Changelog> getSubmissionChangelog(const std::string& base_path, const std::string &modified_path) {
+    std::shared_ptr<data::Changelog> SubmissionBuilder::getSubmissionChangelog(const std::string& base_path, const std::string &modified_path) {
         if (base_path.empty()) {
             error("Base devbuild path not defined");
             return nullptr;
