@@ -43,6 +43,11 @@ namespace submit {
          */
         static void exportChangelog();
 
+        /**
+         * Compresse archive_path_ into an archive file
+        */
+        static void compress();
+
     private:
         /**
          * Moves assets into the submission folder
@@ -53,6 +58,10 @@ namespace submit {
          * Moves .lmu map files into the submission folder
         */
         static void submitMaps();
+        /**
+         * @return the root of the game files
+        */
+        static fs::path gameRoot();
 
         static std::shared_ptr<data::Changelog> submissionChangelog_;
 

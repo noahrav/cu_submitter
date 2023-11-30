@@ -70,7 +70,7 @@ namespace submit {
         }
 
         const auto base_asset_folder = std::string(modified_path_ / fs::path(folder));
-        const auto destination_asset_folder = std::string(archive_path_ / fs::path(folder));
+        const auto destination_asset_folder = std::string(gameRoot() / fs::path(folder));
 
         if (!fs::create_directory(destination_asset_folder)) {
             error("Could not create: " + destination_asset_folder);
@@ -107,14 +107,14 @@ namespace submit {
             case data::Status::REMOVED:
                 break;
             case data::Status::MODIFIED:
-                log("Moving " + std::string(origin_map) + " into " + archive_path_);
+                log("Moving " + std::string(origin_map) + " into " + std::string(gameRoot()));
 
-                fs::copy(origin_map, archive_path_);
+                fs::copy(origin_map, gameRoot());
                 break;
             case data::Status::ADDED:
-                log("Moving " + std::string(origin_map) + " into " + archive_path_);
+                log("Moving " + std::string(origin_map) + " into " +  std::string(gameRoot()));
 
-                fs::copy(origin_map, archive_path_);
+                fs::copy(origin_map, gameRoot());
                 break;
             }
         }
@@ -127,12 +127,13 @@ namespace submit {
         }
 
         try {
-            fs::create_directories(archive_path);
-
             archive_path_ = archive_path;
+            const fs::path game_root = gameRoot();
 
-            fs::copy(modified_path_ / fs::path("RPG_RT.lbd"), archive_path);
-            fs::copy(modified_path_ / fs::path("RPG_RT.lmt"), archive_path);
+            fs::create_directories(game_root);
+
+            fs::copy(modified_path_ / fs::path("RPG_RT.lbd"), game_root);
+            fs::copy(modified_path_ / fs::path("RPG_RT.lmt"), game_root);
 
             submitMaps();
 
@@ -144,6 +145,10 @@ namespace submit {
             submitAssets(data::AssetCategory::PANORAMA);
             submitAssets(data::AssetCategory::PICTURE);
             submitAssets(data::AssetCategory::BATTLE_ANIMATION);
+
+            exportChangelog();
+
+            log("File " + archive_path + " ready for compression");
 
         } catch (const std::exception &e) {
             error(std::string(e.what()));
@@ -163,5 +168,42 @@ namespace submit {
         const std::string output_name = dev_name + "_submission_" + date_formatted;
 
         submit(output_name); 
+    }
+
+    void SubmissionBuilder::exportChangelog() {
+        if (archive_path_.empty()) {
+            error("Archive path not defined");
+            return;
+        }
+        if (!submissionChangelog_) {
+            error("No changelog scanned");
+            return;
+        }
+
+        const fs::path export_path = archive_path_;
+
+        chgen::ChangelogGenerator::generate(submissionChangelog_, export_path);
+    }
+
+    void SubmissionBuilder::compress() {
+        if (archive_path_.length() < 0 || !fs::exists(archive_path_)) {
+            error("Archive path is not defined. getSubmissionChangelog, submit and exportChangelog need to be called beforehand");
+            return;
+        }
+
+        log("Compressing " + archive_path_ + "...");
+
+        const std::string zipCommand = "zip -r " + archive_path_ + ".zip" + " " + archive_path_;
+
+        if (std::system(zipCommand.c_str()) != 0) {
+            error("Could not compress " + archive_path_);
+            return;
+        }
+
+        log("Compression successful. Archive : " + archive_path_ + ".zip");
+    }
+
+    fs::path SubmissionBuilder::gameRoot() {
+        return archive_path_ / fs::path("data");
     }
 } // submit

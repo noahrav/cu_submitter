@@ -423,7 +423,7 @@ namespace transfer {
             return;
         }
 
-        fs::path export_path = destination_path_;
+        const fs::path export_path = destination_path_;
 
         chgen::ChangelogGenerator::generate(transferChangelog_, export_path.parent_path());
     }
