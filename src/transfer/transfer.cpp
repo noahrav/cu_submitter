@@ -360,7 +360,7 @@ namespace transfer {
         }
 
         if (!transferChangelog_) {
-            error("Transfer changelog not defined. You need to scan your modifications before calling getTransferChangelog.");
+            error("Transfer changelog not defined. You need to scan your modifications before calling transfer.");
             return;
         }
 
@@ -423,7 +423,7 @@ namespace transfer {
             return;
         }
 
-        fs::path export_path = destination_path_;
+        const fs::path export_path = destination_path_;
 
         chgen::ChangelogGenerator::generate(transferChangelog_, export_path.parent_path());
     }

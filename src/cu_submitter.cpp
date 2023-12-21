@@ -1,10 +1,9 @@
 #include <iostream>
-
-#include <QApplication>
-#include <QLabel>
+#include <pistache/endpoint.h>
 
 #include "chgen/chgen.h"
 #include "transfer/transfer.h"
+#include "submit/submit.h"
 #include "utils/error.h"
 #include "utils/log.h"
 #include "utils/print.h"
@@ -25,7 +24,8 @@ int main(int argc, char* argv[])
             usage_message += "-----\n";
             usage_message += "--help | --usage : prints this message\n";
             usage_message += "--chgen <base_path> <modified_path> : generates a changelog text file\n";
-            usage_message += "--transfer <unmodified_copy_path> <modified_copy_path> <destination_path>: : transfers the modified files to the destination path\n";
+            usage_message += "--transfer <unmodified_copy_path> <modified_copy_path> <destination_path> : transfers the modified files to the destination path\n";
+            usage_message += "--submit <unmodified_copy_path> <modified_copy_path> [<archive_path>] : compress the modified files to a submission archive\n";
 
             print(usage_message);
         } else if (option == "--chgen") {
@@ -72,6 +72,45 @@ int main(int argc, char* argv[])
             transfer::DevbuildTransferer::transfer(to);
 
             transfer::DevbuildTransferer::exportChangelog();
+        } else if (option == "--submit") {
+            if (argc < 4) {
+                error("Not enough arguments");
+                return 1;
+            }
+
+            const std::string base = argv[2];
+            const std::string modified = argv[3];
+            const std::string archive = argc >= 5 ? argv[4] : "";
+
+            const auto changelog = submit::SubmissionBuilder::getSubmissionChangelog(base, modified);
+
+            if (changelog == nullptr) {
+                error("Could not generate changelog");
+                return 1;
+            }
+
+            std::cout << "Changelog: \n";
+            std::cout << changelog->stringify() << "\n\n";
+
+            std::cout << "Confirm ? (O/N) ";
+            char confirm;
+            std::cin >> confirm;
+            if (confirm == 'N' || confirm == 'n') {
+                error("Submission cancelled");
+                return 8;
+            }
+
+            try {
+                if (archive.length() > 0) {
+                    submit::SubmissionBuilder::submit(archive);
+                } else {
+                    submit::SubmissionBuilder::submit();
+                }
+
+                //submit::SubmissionBuilder::compress();
+            } catch (const std::exception &e) {
+                error(std::string(e.what()));
+            }
         } else {
             error("Invalid arguments");
             return 1;
@@ -80,10 +119,9 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    QApplication MainWindow(argc, argv);
-    QLabel MainLabel("<center>Collective Unconscious Submitter</center>");
-    MainLabel.setWindowTitle("CU Submitter");
-    MainLabel.resize(400, 400);
-    MainLabel.show();
-    return MainWindow.exec();
+
+
+
+
+    return 0;
 }

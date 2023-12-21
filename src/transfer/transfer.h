@@ -20,6 +20,7 @@ namespace transfer {
          * @returns Your modifications in the format of a changelog
          */
         static std::shared_ptr<data::Changelog> getTransferChangelog(const std::string& base_path_, const std::string &origin_path);
+        
         /**
          * Returns the last scanned transfer changelog
          * @returns The last scanned transfer's changelog
