@@ -121,10 +121,10 @@ int main(int argc, char* argv[])
 
     std::string port = "8080";
 
-    if (std::string(argv[1]) == "-p" && argc < 3) {
+    if (argc >= 2 && std::string(argv[1]) == "-p" && argc < 3) {
         error("Invalid arguments");
         return 1;
-    } else if (std::string(argv[1]) == "-p") {
+    } else if (argc >= 2 && std::string(argv[1]) == "-p") {
         port = argv[2];
     }
 
