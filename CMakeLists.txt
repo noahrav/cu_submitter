@@ -16,13 +16,9 @@ set(PROJECT_SOURCES
         src/utils/utils.cpp src/utils/utils.h
         src/submit/submit.cpp src/submit/submit.h)
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets)
-
 add_executable(cu_submitter
         ${PROJECT_SOURCES})
 
 target_link_libraries(cu_submitter
-        Qt5::Widgets)
-
-target_link_libraries(cu_submitter
-        lcf)
+        lcf
+        pistache)

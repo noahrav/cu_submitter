@@ -1,7 +1,5 @@
 #include <iostream>
-
-#include <QApplication>
-#include <QLabel>
+#include <pistache/endpoint.h>
 
 #include "chgen/chgen.h"
 #include "transfer/transfer.h"
@@ -121,10 +119,9 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    QApplication MainWindow(argc, argv);
-    QLabel MainLabel("<center>Collective Unconscious Submitter</center>");
-    MainLabel.setWindowTitle("CU Submitter");
-    MainLabel.resize(400, 400);
-    MainLabel.show();
-    return MainWindow.exec();
+
+
+
+
+    return 0;
 }
