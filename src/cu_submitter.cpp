@@ -1,6 +1,6 @@
 #include <iostream>
-#include <pistache/endpoint.h>
 
+#include "api/api.h"
 #include "chgen/chgen.h"
 #include "transfer/transfer.h"
 #include "submit/submit.h"
@@ -12,20 +12,20 @@
  * @program cu_submitter
  * @brief The main entry point for the program.
  */
-
 int main(int argc, char* argv[])
 {
-    if (argc >= 2) {
+    if (argc >= 2 && std::string(argv[1]) != "-p") {
         //CLI mode
         const std::string option = argv[1];
 
         if (option == "--help" || option == "--usage") {
             std::string usage_message = "USAGE\n";
             usage_message += "-----\n";
+            usage_message += "[-p <port>] : opens backend server on specific port; 8080 by default\n"; 
             usage_message += "--help | --usage : prints this message\n";
             usage_message += "--chgen <base_path> <modified_path> : generates a changelog text file\n";
             usage_message += "--transfer <unmodified_copy_path> <modified_copy_path> <destination_path> : transfers the modified files to the destination path\n";
-            usage_message += "--submit <unmodified_copy_path> <modified_copy_path> [<archive_path>] : compress the modified files to a submission archive\n";
+            usage_message += "--submit <unmodified_copy_path> <modified_copy_path> [<archive_path>] : copy the modified files to a submission folder\n";
 
             print(usage_message);
         } else if (option == "--chgen") {
@@ -119,9 +119,21 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    std::string port = "8080";
 
+    if (std::string(argv[1]) == "-p" && argc < 3) {
+        error("Invalid arguments");
+        return 1;
+    } else if (std::string(argv[1]) == "-p") {
+        port = argv[2];
+    }
 
+    Address addr(Ipv4::any(), Port(stoi(port)));
 
+    auto opts = Http::Endpoint::options().threads(1);
+    Http::Endpoint server(addr);
 
-    return 0;
+    server.init(opts);
+    server.setHandler(Http::make_handler<CUSubmitterHandler>());
+    server.serve();
 }

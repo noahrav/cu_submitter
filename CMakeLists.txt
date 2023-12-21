@@ -6,6 +6,7 @@ add_subdirectory(deps)
 set(CMAKE_CXX_STANDARD 20)
 
 set(PROJECT_SOURCES
+        src/api/api.h
         src/cu_submitter.cpp
         src/chgen/chgen.cpp src/chgen/chgen.h
         src/data/changelog.cpp src/data/changelog.h 
