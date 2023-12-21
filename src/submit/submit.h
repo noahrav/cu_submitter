@@ -46,7 +46,7 @@ namespace submit {
         /**
          * Compresse archive_path_ into an archive file
         */
-        static void compress();
+        //static void compress();
 
     private:
         /**

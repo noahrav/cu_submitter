@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
                     submit::SubmissionBuilder::submit();
                 }
 
-                submit::SubmissionBuilder::compress();
+                //submit::SubmissionBuilder::compress();
             } catch (const std::exception &e) {
                 error(std::string(e.what()));
             }

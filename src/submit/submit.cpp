@@ -186,7 +186,7 @@ namespace submit {
         chgen::ChangelogGenerator::generate(submissionChangelog_, export_path);
     }
 
-    void SubmissionBuilder::compress() {
+    /*void SubmissionBuilder::compress() {
         if (archive_path_.length() < 0 || !fs::exists(archive_path_)) {
             error("Archive path is not defined. getSubmissionChangelog, submit and exportChangelog need to be called beforehand");
             return;
@@ -202,7 +202,7 @@ namespace submit {
         }
 
         log("Compression successful. Archive : " + archive_path_ + ".zip");
-    }
+    }*/
 
     fs::path SubmissionBuilder::gameRoot() {
         return archive_path_ / fs::path("data");
