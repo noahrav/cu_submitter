@@ -1,10 +1,12 @@
-# CU Submitter
+CU Submitter
+========
+
 A small application designed to help Collective Unconscious developers submit their updates
 
-# Install required librairies
+# Requirements
 Cmake > 3.14
 
-# Build
+# Build instructions
 ```
 cd
 git clone https://github.com/noahrav/cu_submitter.git
