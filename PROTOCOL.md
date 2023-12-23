@@ -7,7 +7,5 @@ API Protocol
 | /chgen            | POST         | JSON              | JSON                | Scan builds for changes, returns changelog and exports it into a text file |
 | /transfer         | POST         | JSON              | JSON                | Scan builds for transfer changelog, returns changelog                      |
 | /transfer         | GET          |                   | JSON                | Returns last scanned transfer changelog                                    |
-| /transfer/confirm | GET          |                   |                     | Confirms transfer                                                          |
 | /submit           | POST         | JSON              | JSON                | Scan builds for submit changelog, returns changelog                        |
 | /submit           | GET          |                   | JSON                | Returns last scanned submit changelog                                      |
-| /submit/confirm   | GET          |                   |                     | Confirms submit                                                            |

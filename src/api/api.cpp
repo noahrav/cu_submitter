@@ -33,10 +33,8 @@ namespace CUSubmitterService {
         Routes::Post(router, "/chgen", Routes::bind(&Service::generateChangelog, this));
         Routes::Post(router, "/transfer", Routes::bind(&Service::generateTransferChangelog, this));
         Routes::Get(router, "/transfer", Routes::bind(&Service::lastTransferChangelog, this));
-        Routes::Get(router, "/transfer/confirm", Routes::bind(&Service::transferConfirm, this));
         Routes::Post(router, "/submit", Routes::bind(&Service::generateSubmissionChangelog, this));
         Routes::Get(router, "/submit", Routes::bind(&Service::lastSubmissionChangelog, this));
-        Routes::Get(router, "/submit/confirm", Routes::bind(&Service::submissionConfirm, this));
     }
 
     void Service::logRequest(const Request &request) {
@@ -96,19 +94,6 @@ namespace CUSubmitterService {
         }
     }
 
-    void Service::transferConfirm(const Service::Request &request, Service::Response response) {
-        try {
-            logRequest(request);
-            response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
-        } catch (const std::runtime_error &e) {
-            log("Error: " + std::string(e.what()));
-            response.send(Pistache::Http::Code::Not_Found, e.what(), MIME(Text, Plain));
-        } catch (const std::exception &e) {
-            log("Error: " + std::string(e.what()));
-            response.send(Pistache::Http::Code::Internal_Server_Error, e.what(), MIME(Text, Plain));
-        }
-    }
-
     void Service::generateSubmissionChangelog(const Service::Request &request, Service::Response response) {
         try {
             logRequest(request);
@@ -123,19 +108,6 @@ namespace CUSubmitterService {
     }
 
     void Service::lastSubmissionChangelog(const Service::Request &request, Service::Response response) {
-        try {
-            logRequest(request);
-            response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
-        } catch (const std::runtime_error &e) {
-            log("Error: " + std::string(e.what()));
-            response.send(Pistache::Http::Code::Not_Found, e.what(), MIME(Text, Plain));
-        } catch (const std::exception &e) {
-            log("Error: " + std::string(e.what()));
-            response.send(Pistache::Http::Code::Internal_Server_Error, e.what(), MIME(Text, Plain));
-        }
-    }
-
-    void Service::submissionConfirm(const Service::Request &request, Service::Response response) {
         try {
             logRequest(request);
             response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
