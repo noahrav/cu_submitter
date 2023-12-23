@@ -5,7 +5,6 @@
 #include "transfer/transfer.h"
 #include "submit/submit.h"
 #include "utils/error.h"
-#include "utils/log.h"
 #include "utils/print.h"
 
 /**
@@ -119,7 +118,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    std::string port = "8080";
+    std::string port = "3000";
 
     if (argc >= 2 && std::string(argv[1]) == "-p" && argc < 3) {
         error("Invalid arguments");
@@ -128,10 +127,8 @@ int main(int argc, char* argv[])
         port = argv[2];
     }
 
-    Address addr(Ipv4::any(), Port(stoi(port)));
+    Pistache::Address addr(Pistache::Ipv4::any(), Pistache::Port(stoi(port)));
 
-    CUSubmitterService service(addr);
-    service.init();
-
-    service.start();
+    CUSubmitterService::Service service(addr);
+    service.run();
 }

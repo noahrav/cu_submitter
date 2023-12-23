@@ -2,56 +2,35 @@
 #define CU_SUBMITTER_API_H
 
 #include <pistache/endpoint.h>
+#include <pistache/router.h>
+
 #include "../utils/log.h"
 
-using namespace Pistache;
+namespace CUSubmitterService {
 
-class CUSubmitterHandler : public Http::Handler {
-public:
-    HTTP_PROTOTYPE(CUSubmitterHandler)
+    class Service {
+    public:
+        explicit Service(Pistache::Address addr);
 
-    static void logRequest(const Http::Request& request) {
-        log("Request received : " + request.resource() + " " + Http::methodString(request.method()) + " from " + request.address().host() + ":" + std::to_string(request.address().port()));
-        if (request.body().empty()) {
-            log("No content");
-        } else {
-            log("Content : " + request.body());
-        }
-    }
+        void run(size_t thr = std::thread::hardware_concurrency());
 
-    void onRequest(const Http::Request& request, Http::ResponseWriter response) override {
-        logRequest(request);
+        void shutdown();
 
-        if (request.resource() == "/" && request.method() == Http::Method::Get) {
-            response.send(Http::Code::Ok, "CU Submitter backend is reponding\n");
-        } else {
-            response.send(Http::Code::Not_Found);
-        }
-    }
-};
+    private:
+        void configureRoutes();
 
-class CUSubmitterService {
-public:
-    explicit CUSubmitterService(Address addr)
-            : server(std::make_shared<Http::Endpoint>(addr)) {}
+        using Request = Pistache::Rest::Request;
+        using Response = Pistache::Http::ResponseWriter;
 
-    void init(size_t thr = 2) {
-        auto opts = Http::Endpoint::options().threads(static_cast<int>(thr));
+        void ready(const Request& request, Response response);
 
-        server->init(opts);
-        server->setHandler(Http::make_handler<CUSubmitterHandler>());
-    }
+        static void logRequest(const Request& request);
 
-    void start() {
-        server->serve();
-    }
+        std::shared_ptr<Pistache::Http::Endpoint> server;
+        Pistache::Rest::Router router;
+        Pistache::Port port;
+    };
 
-    void shutdown() {
-        server->shutdown();
-    }
-
-private:
-    std::shared_ptr<Http::Endpoint> server;
-};
+} // CUSubmitterService
 
 #endif //CU_SUBMITTER_API_H
