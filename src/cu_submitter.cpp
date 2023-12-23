@@ -130,10 +130,8 @@ int main(int argc, char* argv[])
 
     Address addr(Ipv4::any(), Port(stoi(port)));
 
-    auto opts = Http::Endpoint::options().threads(1);
-    Http::Endpoint server(addr);
+    CUSubmitterService service(addr);
+    service.init();
 
-    server.init(opts);
-    server.setHandler(Http::make_handler<CUSubmitterHandler>());
-    server.serve();
+    service.start();
 }

@@ -22,8 +22,36 @@ public:
     void onRequest(const Http::Request& request, Http::ResponseWriter response) override {
         logRequest(request);
 
-        response.send(Http::Code::Ok, "CU Submitter backend is reponding\n");
+        if (request.resource() == "/" && request.method() == Http::Method::Get) {
+            response.send(Http::Code::Ok, "CU Submitter backend is reponding\n");
+        } else {
+            response.send(Http::Code::Not_Found);
+        }
     }
+};
+
+class CUSubmitterService {
+public:
+    explicit CUSubmitterService(Address addr)
+            : server(std::make_shared<Http::Endpoint>(addr)) {}
+
+    void init(size_t thr = 2) {
+        auto opts = Http::Endpoint::options().threads(static_cast<int>(thr));
+
+        server->init(opts);
+        server->setHandler(Http::make_handler<CUSubmitterHandler>());
+    }
+
+    void start() {
+        server->serve();
+    }
+
+    void shutdown() {
+        server->shutdown();
+    }
+
+private:
+    std::shared_ptr<Http::Endpoint> server;
 };
 
 #endif //CU_SUBMITTER_API_H
