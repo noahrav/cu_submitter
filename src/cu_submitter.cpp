@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
         if (option == "--help" || option == "--usage") {
             std::string usage_message = "USAGE\n";
             usage_message += "-----\n";
-            usage_message += "[-p <port>] : opens backend server on specific port; 8080 by default\n"; 
+            usage_message += "[-p <port>] : opens backend server on specific port; 3000 by default\n";
             usage_message += "--help | --usage : prints this message\n";
             usage_message += "--chgen <base_path> <modified_path> : generates a changelog text file\n";
             usage_message += "--transfer <unmodified_copy_path> <modified_copy_path> <destination_path> : transfers the modified files to the destination path\n";

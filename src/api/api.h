@@ -23,6 +23,13 @@ namespace CUSubmitterService {
         using Response = Pistache::Http::ResponseWriter;
 
         void ready(const Request& request, Response response);
+        void generateChangelog(const Request& request, Response response);
+        void generateTransferChangelog(const Request& request, Response response);
+        void lastTransferChangelog(const Request& request, Response response);
+        void transferConfirm(const Request& request, Response response);
+        void generateSubmissionChangelog(const Request& request, Response response);
+        void lastSubmissionChangelog(const Request& request, Response response);
+        void submissionConfirm(const Request& request, Response response);
 
         static void logRequest(const Request& request);
 
