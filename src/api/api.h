@@ -4,6 +4,8 @@
 #include <pistache/endpoint.h>
 #include <pistache/router.h>
 #include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 #include "../chgen/chgen.h"
 #include "../data/changelog.h"

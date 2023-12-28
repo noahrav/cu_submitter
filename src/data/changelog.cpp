@@ -6,6 +6,13 @@ namespace data {
         return "(" + std::to_string(x) + "," + std::to_string(y) + ")";
     }
 
+    template <typename Writer>
+    void Coordinates::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
+    }
+
     std::string status_string(Status status) {
         switch (status) {
             case ADDED:
@@ -32,12 +39,33 @@ namespace data {
         return s;
     }
 
+    template <typename Writer>
+    void BGMEvent::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
+    }
+
     std::string OpenConnection::stringify() {
         return status_string(status_) + " Open connection at " + coordinates_.stringify();
     }
 
+    template <typename Writer>
+    void OpenConnection::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
+    }
+
     std::string ClosedConnection::stringify() {
         return status_string(status_) + " Closed connection at " + coordinates_.stringify();
+    }
+
+    template <typename Writer>
+    void ClosedConnection::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
     }
 
     std::string id_string(unsigned int id) {
@@ -89,6 +117,13 @@ namespace data {
         return s;
     }
 
+    template <typename Writer>
+    void Map::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
+    }
+
     std::string connection_type_string(ConnectionType connection_type) {
         switch (connection_type) {
             case ONEWAY:
@@ -118,6 +153,13 @@ namespace data {
         return s;
     }
 
+    template <typename Writer>
+    void Connection::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
+    }
+
     std::string CommonEvent::stringify() {
         std::string s = status_string(status_) + " CE[" + id_string(id_) + "] - " + name_;
 
@@ -128,6 +170,13 @@ namespace data {
         }
 
         return s;
+    }
+
+    template <typename Writer>
+    void CommonEvent::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
     }
 
     std::string TilesetInfo::stringify() {
@@ -146,6 +195,13 @@ namespace data {
         return s;
     }
 
+    template <typename Writer>
+    void TilesetInfo::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
+    }
+
     std::string Switch::stringify() {
         std::string s = status_string(status_) + " Switch[" + id_string(id_) + "] - " + name_;
 
@@ -158,6 +214,13 @@ namespace data {
         return s;
     }
 
+    template <typename Writer>
+    void Switch::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
+    }
+
     std::string Variable::stringify() {
         std::string s = status_string(status_) + " Variable[" + id_string(id_) + "] - " + name_;
 
@@ -168,6 +231,13 @@ namespace data {
         }
 
         return s;
+    }
+
+    template <typename Writer>
+    void Variable::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
     }
 
     std::string Animation::stringify() {
@@ -184,6 +254,13 @@ namespace data {
         }
 
         return s;
+    }
+
+    template <typename Writer>
+    void Animation::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
     }
 
     std::string Asset::stringify() {
@@ -229,6 +306,13 @@ namespace data {
         }
 
         return s;
+    }
+
+    template <typename Writer>
+    void Asset::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.EndObject();
     }
 
     std::string date_string(tm* date) {
@@ -441,6 +525,16 @@ namespace data {
         }
 
         return s;
+    }
+
+    template <typename Writer>
+    void Changelog::Serialize(Writer& writer) const {
+        writer.StartObject();
+
+        writer.String("developer");
+        writer.String(developer_.c_str(), static_cast<rapidjson::SizeType>(developer_.length()));
+
+        writer.EndObject();
     }
 
 } // data

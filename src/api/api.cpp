@@ -86,7 +86,13 @@ namespace CUSubmitterService {
 
             chgen::ChangelogGenerator::generate(changelog);
 
-            response.send(Pistache::Http::Code::Ok);
+            rapidjson::StringBuffer sb;
+            rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+
+            changelog->Serialize(writer);
+
+            const std::string string_changelog = sb.GetString();
+            response.send(Pistache::Http::Code::Ok, string_changelog, MIME(Application, Json));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
             response.send(Pistache::Http::Code::Not_Found, e.what(), MIME(Text, Plain));

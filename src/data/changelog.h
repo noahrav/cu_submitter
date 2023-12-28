@@ -5,6 +5,10 @@
 #include <vector>
 #include <ctime>
 #include <lcf/rpg/music.h>
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
+
 
 namespace data {
 
@@ -25,6 +29,9 @@ namespace data {
         int y;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const Coordinates& lhs, const Coordinates& rhs) {
@@ -45,6 +52,9 @@ namespace data {
         int speed_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const BGMEvent& lhs, const BGMEvent& rhs) {
@@ -62,6 +72,9 @@ namespace data {
         Coordinates coordinates_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const OpenConnection& lhs, const OpenConnection& rhs) {
@@ -79,6 +92,9 @@ namespace data {
         Coordinates coordinates_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const ClosedConnection& lhs, const ClosedConnection& rhs) {
@@ -111,6 +127,9 @@ namespace data {
         lcf::rpg::Music main_music_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const Map& lhs, const Map& rhs) {
@@ -146,6 +165,9 @@ namespace data {
         ConnectionType type_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const Connection& lhs, const Connection& rhs) {
@@ -165,6 +187,9 @@ namespace data {
         std::vector<std::string> notes_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const CommonEvent& lhs, const CommonEvent& rhs) {
@@ -185,6 +210,9 @@ namespace data {
         std::vector<std::string> notes_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const TilesetInfo& lhs, const TilesetInfo& rhs) {
@@ -204,6 +232,9 @@ namespace data {
         std::vector<std::string> notes_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const Switch& lhs, const Switch& rhs) {
@@ -223,6 +254,9 @@ namespace data {
         std::vector<std::string> notes_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const Variable& lhs, const Variable& rhs) {
@@ -243,6 +277,9 @@ namespace data {
         std::vector<std::string> notes_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const Animation& lhs, const Animation& rhs) {
@@ -280,6 +317,9 @@ namespace data {
         std::string contributors_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
     };
 
     inline bool operator==(const Asset& lhs, const Asset& rhs) {
@@ -398,6 +438,9 @@ namespace data {
         std::vector<Asset> animation_files_;
 
         std::string stringify();
+
+        template <typename Writer>
+        void Serialize(Writer& writer) const;
 
         Changelog() = default;
     };
