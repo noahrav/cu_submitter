@@ -78,6 +78,14 @@ namespace CUSubmitterService {
             log("Parameter base_path : " + base_path);
             log("Parameter modified_path : " + modified_path);
 
+            const auto changelog = chgen::ChangelogGenerator::scan(base_path, modified_path);
+            if (changelog == nullptr) {
+                response.send(Pistache::Http::Code::Bad_Request, "Could not generate changelog", MIME(Text, Plain));
+                return;
+            }
+
+            chgen::ChangelogGenerator::generate(changelog);
+
             response.send(Pistache::Http::Code::Ok);
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
@@ -168,13 +176,13 @@ namespace CUSubmitterService {
             const std::string modified_copy_path = document["modified_copy_path"].GetString();
             std::string archive_path;
 
-            if(document.HasMember("archive_path")) {
-                archive_path = document["archive_path"].GetString();
-            }
-
             log("Parameter unmodified_copy_path : " + unmodified_copy_path);
             log("Parameter modified_copy_path : " + modified_copy_path);
-            log("Parameter archive_path : " + archive_path);
+
+            if(document.HasMember("archive_path")) {
+                archive_path = document["archive_path"].GetString();
+                log("Parameter archive_path : " + archive_path);
+            }
 
             response.send(Pistache::Http::Code::Ok);
         } catch (const std::runtime_error &e) {

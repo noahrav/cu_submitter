@@ -5,6 +5,10 @@
 #include <pistache/router.h>
 #include <rapidjson/document.h>
 
+#include "../chgen/chgen.h"
+#include "../data/changelog.h"
+#include "../transfer/transfer.h"
+#include "../submit/submit.h"
 #include "../utils/log.h"
 
 namespace CUSubmitterService {
