@@ -62,7 +62,7 @@ namespace CUSubmitterService {
             logRequest(request);
 
             const std::string body = request.body();
-            log("Raw content : " + body);
+            log("Raw content :\n" + body);
 
             rapidjson::Document document;
             document.Parse(body.c_str());
@@ -88,7 +88,7 @@ namespace CUSubmitterService {
             logRequest(request);
 
             const std::string body = request.body();
-            log("Raw content : " + body);
+            log("Raw content :\n" + body);
 
             rapidjson::Document document;
             document.Parse(body.c_str());
@@ -144,7 +144,7 @@ namespace CUSubmitterService {
             logRequest(request);
 
             const std::string body = request.body();
-            log("Raw content : " + body);
+            log("Raw content :\n" + body);
 
             rapidjson::Document document;
             document.Parse(body.c_str());
