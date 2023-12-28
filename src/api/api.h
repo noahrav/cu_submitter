@@ -3,6 +3,7 @@
 
 #include <pistache/endpoint.h>
 #include <pistache/router.h>
+#include <rapidjson/document.h>
 
 #include "../utils/log.h"
 

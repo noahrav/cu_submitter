@@ -60,6 +60,19 @@ namespace CUSubmitterService {
     void Service::generateChangelog(const Service::Request &request, Service::Response response) {
         try {
             logRequest(request);
+
+            const std::string body = request.body();
+            log("Raw content : " + body);
+
+            rapidjson::Document document;
+            document.Parse(body.c_str());
+
+            const std::string base_path = document["base_path"].GetString();
+            const std::string modified_path = document["modified_path"].GetString();
+
+            log("Parameter base_path : " + base_path);
+            log("Parameter modified_path : " + modified_path);
+
             response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
@@ -73,6 +86,21 @@ namespace CUSubmitterService {
     void Service::generateTransferChangelog(const Service::Request &request, Service::Response response) {
         try {
             logRequest(request);
+
+            const std::string body = request.body();
+            log("Raw content : " + body);
+
+            rapidjson::Document document;
+            document.Parse(body.c_str());
+
+            const std::string unmodified_copy_path = document["unmodified_copy_path"].GetString();
+            const std::string modified_copy_path = document["modified_copy_path"].GetString();
+            const std::string destination_path = document["destination_path"].GetString();
+
+            log("Parameter unmodified_copy_path : " + unmodified_copy_path);
+            log("Parameter modified_copy_path : " + modified_copy_path);
+            log("Parameter destination_path : " + destination_path);
+
             response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
@@ -86,6 +114,7 @@ namespace CUSubmitterService {
     void Service::transfer(const Service::Request &request, Service::Response response) {
         try {
             logRequest(request);
+
             response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
@@ -99,6 +128,7 @@ namespace CUSubmitterService {
     void Service::lastTransferChangelog(const Service::Request &request, Service::Response response) {
         try {
             logRequest(request);
+
             response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
@@ -112,6 +142,21 @@ namespace CUSubmitterService {
     void Service::generateSubmissionChangelog(const Service::Request &request, Service::Response response) {
         try {
             logRequest(request);
+
+            const std::string body = request.body();
+            log("Raw content : " + body);
+
+            rapidjson::Document document;
+            document.Parse(body.c_str());
+
+            const std::string unmodified_copy_path = document["unmodified_copy_path"].GetString();
+            const std::string modified_copy_path = document["modified_copy_path"].GetString();
+            const std::string archive_path = document["archive_path"].GetString();
+
+            log("Parameter unmodified_copy_path : " + unmodified_copy_path);
+            log("Parameter modified_copy_path : " + modified_copy_path);
+            log("Parameter archive_path : " + archive_path);
+
             response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
@@ -125,6 +170,7 @@ namespace CUSubmitterService {
     void Service::submit(const Service::Request &request, Service::Response response) {
         try {
             logRequest(request);
+
             response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
@@ -138,6 +184,7 @@ namespace CUSubmitterService {
     void Service::lastSubmissionChangelog(const Service::Request &request, Service::Response response) {
         try {
             logRequest(request);
+
             response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
