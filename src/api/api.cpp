@@ -32,8 +32,8 @@ namespace CUSubmitterService {
         Routes::Get(router, "/", Routes::bind(&Service::ready, this));
         Routes::Post(router, "/chgen", Routes::bind(&Service::generateChangelog, this));
         Routes::Post(router, "/transfer", Routes::bind(&Service::generateTransferChangelog, this));
-        Routes::Get(router, "/transfer", Routes::bind(&Service::generateTransferChangelog, this));
-        Routes::Get(router, "/transfer/changelog", Routes::bind(&Service::transfer, this));
+        Routes::Get(router, "/transfer", Routes::bind(&Service::transfer, this));
+        Routes::Get(router, "/transfer/changelog", Routes::bind(&Service::lastTransferChangelog, this));
         Routes::Post(router, "/submit", Routes::bind(&Service::generateSubmissionChangelog, this));
         Routes::Get(router, "/submit", Routes::bind(&Service::submit, this));
         Routes::Get(router, "/submit/changelog", Routes::bind(&Service::lastSubmissionChangelog, this));
