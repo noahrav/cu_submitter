@@ -32,10 +32,10 @@ namespace CUSubmitterService {
         Routes::Get(router, "/", Routes::bind(&Service::ready, this));
         Routes::Post(router, "/chgen", Routes::bind(&Service::generateChangelog, this));
         Routes::Post(router, "/transfer", Routes::bind(&Service::generateTransferChangelog, this));
-        Routes::Get(router, "/transfer", Routes::bind(&Service::transfer, this));
+        Routes::Post(router, "/transfer/confirm", Routes::bind(&Service::transfer, this));
         Routes::Get(router, "/transfer/changelog", Routes::bind(&Service::lastTransferChangelog, this));
         Routes::Post(router, "/submit", Routes::bind(&Service::generateSubmissionChangelog, this));
-        Routes::Get(router, "/submit", Routes::bind(&Service::submit, this));
+        Routes::Post(router, "/submit/confirm", Routes::bind(&Service::submit, this));
         Routes::Get(router, "/submit/changelog", Routes::bind(&Service::lastSubmissionChangelog, this));
     }
 
@@ -61,13 +61,14 @@ namespace CUSubmitterService {
         try {
             logRequest(request);
 
-            const std::string body = request.body();
+            const std::string& body = request.body();
             log("Raw content :\n" + body);
 
             rapidjson::Document document;
             document.Parse(body.c_str());
 
             if (!(document.HasMember("base_path") && document.HasMember("modified_path"))) {
+                error("Incorrect arguments");
                 response.send(Pistache::Http::Code::Bad_Request);
                 return;
             }
@@ -106,26 +107,37 @@ namespace CUSubmitterService {
         try {
             logRequest(request);
 
-            const std::string body = request.body();
+            const std::string& body = request.body();
             log("Raw content :\n" + body);
 
             rapidjson::Document document;
             document.Parse(body.c_str());
 
-            if (!(document.HasMember("unmodified_copy_path") && document.HasMember("unmodified_copy_path") && document.HasMember("destination_path"))) {
+            if (!(document.HasMember("unmodified_copy_path") && document.HasMember("modified_copy_path"))) {
+                error("Incorrect arguments");
                 response.send(Pistache::Http::Code::Bad_Request);
                 return;
             }
 
             const std::string unmodified_copy_path = document["unmodified_copy_path"].GetString();
             const std::string modified_copy_path = document["modified_copy_path"].GetString();
-            const std::string destination_path = document["destination_path"].GetString();
 
             log("Parameter unmodified_copy_path : " + unmodified_copy_path);
             log("Parameter modified_copy_path : " + modified_copy_path);
-            log("Parameter destination_path : " + destination_path);
 
-            response.send(Pistache::Http::Code::Ok);
+            const auto changelog = transfer::DevbuildTransferer::getTransferChangelog(unmodified_copy_path, modified_copy_path);
+            if (changelog == nullptr) {
+                response.send(Pistache::Http::Code::Bad_Request, "Could not generate changelog", MIME(Text, Plain));
+                return;
+            }
+
+            rapidjson::StringBuffer sb;
+            rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+
+            changelog->Serialize(writer);
+
+            const std::string string_changelog = sb.GetString();
+            response.send(Pistache::Http::Code::Ok, string_changelog, MIME(Application, Json));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
             response.send(Pistache::Http::Code::Not_Found, e.what(), MIME(Text, Plain));
@@ -139,7 +151,26 @@ namespace CUSubmitterService {
         try {
             logRequest(request);
 
-            response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
+            const std::string& body = request.body();
+            log("Raw content :\n" + body);
+
+            rapidjson::Document document;
+            document.Parse(body.c_str());
+
+            if (!document.HasMember("destination_path")) {
+                error("Incorrect arguments");
+                response.send(Pistache::Http::Code::Bad_Request);
+                return;
+            }
+
+            const std::string destination_path = document["destination_path"].GetString();
+
+            log("Parameter destination_path : " + destination_path);
+
+            transfer::DevbuildTransferer::transfer(destination_path);
+            transfer::DevbuildTransferer::exportChangelog();
+
+            response.send(Pistache::Http::Code::Ok);
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
             response.send(Pistache::Http::Code::Not_Found, e.what(), MIME(Text, Plain));
@@ -153,7 +184,19 @@ namespace CUSubmitterService {
         try {
             logRequest(request);
 
-            response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
+            const auto changelog = transfer::DevbuildTransferer::getTransferChangelog();
+            if (changelog == nullptr) {
+                response.send(Pistache::Http::Code::Bad_Request, "Could not generate changelog", MIME(Text, Plain));
+                return;
+            }
+
+            rapidjson::StringBuffer sb;
+            rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+
+            changelog->Serialize(writer);
+
+            const std::string string_changelog = sb.GetString();
+            response.send(Pistache::Http::Code::Ok, string_changelog, MIME(Application, Json));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
             response.send(Pistache::Http::Code::Not_Found, e.what(), MIME(Text, Plain));
@@ -167,13 +210,14 @@ namespace CUSubmitterService {
         try {
             logRequest(request);
 
-            const std::string body = request.body();
+            const std::string& body = request.body();
             log("Raw content :\n" + body);
 
             rapidjson::Document document;
             document.Parse(body.c_str());
 
-            if (!(document.HasMember("unmodified_copy_path") && document.HasMember("unmodified_copy_path"))) {
+            if (!(document.HasMember("unmodified_copy_path") && document.HasMember("modified_copy_path"))) {
+                error("Incorrect arguments");
                 response.send(Pistache::Http::Code::Bad_Request);
                 return;
             }
@@ -190,7 +234,19 @@ namespace CUSubmitterService {
                 log("Parameter archive_path : " + archive_path);
             }
 
-            response.send(Pistache::Http::Code::Ok);
+            const auto changelog = submit::SubmissionBuilder::getSubmissionChangelog(unmodified_copy_path, modified_copy_path);
+            if (changelog == nullptr) {
+                response.send(Pistache::Http::Code::Bad_Request, "Could not generate changelog", MIME(Text, Plain));
+                return;
+            }
+
+            rapidjson::StringBuffer sb;
+            rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+
+            changelog->Serialize(writer);
+
+            const std::string string_changelog = sb.GetString();
+            response.send(Pistache::Http::Code::Ok, string_changelog, MIME(Application, Json));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
             response.send(Pistache::Http::Code::Not_Found, e.what(), MIME(Text, Plain));
@@ -204,7 +260,24 @@ namespace CUSubmitterService {
         try {
             logRequest(request);
 
-            response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
+            const std::string& body = request.body();
+            log("Raw content :\n" + body);
+
+            rapidjson::Document document;
+            document.Parse(body.c_str());
+
+            std::string archive_path;
+
+            if(document.HasMember("archive_path")) {
+                archive_path = document["archive_path"].GetString();
+                log("Parameter archive_path : " + archive_path);
+
+                submit::SubmissionBuilder::submit(archive_path);
+            } else {
+                submit::SubmissionBuilder::submit();
+            }
+
+            response.send(Pistache::Http::Code::Ok);
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
             response.send(Pistache::Http::Code::Not_Found, e.what(), MIME(Text, Plain));
@@ -218,7 +291,19 @@ namespace CUSubmitterService {
         try {
             logRequest(request);
 
-            response.send(Pistache::Http::Code::Ok, "CU Submitter is up and running\n", MIME(Text, Plain));
+            const auto changelog = submit::SubmissionBuilder::getSubmissionChangelog();
+            if (changelog == nullptr) {
+                response.send(Pistache::Http::Code::Bad_Request, "Could not generate changelog", MIME(Text, Plain));
+                return;
+            }
+
+            rapidjson::StringBuffer sb;
+            rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+
+            changelog->Serialize(writer);
+
+            const std::string string_changelog = sb.GetString();
+            response.send(Pistache::Http::Code::Ok, string_changelog, MIME(Application, Json));
         } catch (const std::runtime_error &e) {
             log("Error: " + std::string(e.what()));
             response.send(Pistache::Http::Code::Not_Found, e.what(), MIME(Text, Plain));
