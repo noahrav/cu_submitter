@@ -2,6 +2,7 @@ include(FetchContent)
 
 set(LIBLCF_VERSION 0.8)
 set(PISTACHE_VERSION 0.0.5)
+set(RAPIDJSON_VERSION 1.1.0)
 
 find_package(liblcf)
 
@@ -15,8 +16,6 @@ if (NOT liblcf_FOUND)
   FetchContent_MakeAvailable(liblcf)
 endif()
 
-#find_package(pistache)
-
 if (NOT pistache_FOUND)
   FetchContent_Declare(
     pistache
@@ -25,3 +24,10 @@ if (NOT pistache_FOUND)
 
   FetchContent_MakeAvailable(pistache)
 endif()
+
+FetchContent_Declare(
+  rapidjson
+  URL "https://github.com/Tencent/rapidjson/archive/v${RAPIDJSON_VERSION}.zip"
+)
+
+FetchContent_MakeAvailable(rapidjson)

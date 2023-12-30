@@ -1,10 +1,12 @@
-# CU Submitter
+CU Submitter
+========
+
 A small application designed to help Collective Unconscious developers submit their updates
 
-# Install required librairies
+# Requirements
 Cmake > 3.14
 
-# Build
+# Build instructions
 ```
 cd
 git clone https://github.com/noahrav/cu_submitter.git
@@ -19,6 +21,7 @@ The executable is build/cu_submitter
 ## CLI
 
 ./cu_submitter --help | --usage : prints the usage\
+./cu_submitter [-p <server_port>] : opens backend server on specific port; 3000 by default\
 ./cu_submitter --chgen <base_path> <modified_path> : generates a changelog text file\
 ./cu_submitter --transfer <unmodified_copy_path> <modified_copy_path> <destination_path> : transfers the modified files to the destination path\
-./cu_submitter --submit <unmodified_copy_path> <modified_copy_path> [<archive_path>] : copy the modified files to a submission archive
+./cu_submitter --submit <unmodified_copy_path> <modified_copy_path> [<archive_path>] : copy the modified files to a submission folder
