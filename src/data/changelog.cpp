@@ -320,7 +320,7 @@ namespace data {
         std::string s = status_string(status_) + " Tileset[" + id_string(id_) + "] - " + name_;
 
         if (!chipset_name_.empty() && status_ == ADDED) {
-            s += " (chipset: " + chipset_name_ + ")";
+            s += " (" + chipset_name_ + ")";
         }
 
         if (!notes_.empty()) {
