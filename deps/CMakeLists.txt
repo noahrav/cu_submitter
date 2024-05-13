@@ -2,7 +2,7 @@ include(FetchContent)
 
 set(LIBLCF_VERSION 0.8)
 set(PISTACHE_VERSION 0.0.5)
-set(RAPIDJSON_VERSION 1.1.0)
+set(RAPIDJSON_LAST_MASTER_COMMIT ab1842a2dae061284c0a62dca1cc6d5e7e37e346)
 
 find_package(liblcf)
 
