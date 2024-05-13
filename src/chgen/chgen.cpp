@@ -108,10 +108,10 @@ namespace chgen {
 
         for (const auto &asset: base_asset_content) {
             const auto asset_name = asset.substr(0, asset.find_first_of('.'));
-            if (asset_name.rfind("record_player_", 0) == 0) {
+            /*if (asset_name.rfind("record_player_", 0) == 0) {
                 // ignore record player assets
                 continue;
-            }
+            }*/
 
             if (std::find(begin(modified_asset_content), end(modified_asset_content), asset) ==
                 end(modified_asset_content)) {
@@ -127,10 +127,10 @@ namespace chgen {
 
         for (const auto &asset: modified_asset_content) {
             const auto asset_name = asset.substr(0, asset.find_first_of('.'));
-            if (asset_name.rfind("record_player_", 0) == 0) {
+            /*if (asset_name.rfind("record_player_", 0) == 0) {
                 // ignore record player assets
                 continue;
-            }
+            }*/
 
             if (std::find(begin(base_asset_content), end(base_asset_content), asset) ==
                 end(base_asset_content)) {
