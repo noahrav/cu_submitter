@@ -27,7 +27,8 @@ endif()
 
 FetchContent_Declare(
   rapidjson
-  URL "https://github.com/Tencent/rapidjson/archive/v${RAPIDJSON_VERSION}.zip"
+  GIT_REPOSITORY "https://github.com/Tencent/rapidjson.git"
+  GIT_TAG "${RAPIDJSON_LAST_MASTER_COMMIT}" # Last commit on master. Replace with "master" to get the latest version.
 )
 
 FetchContent_MakeAvailable(rapidjson)
